@@ -1,0 +1,25 @@
+{
+  "filters":  {
+    "condition": "OR",
+    "rules": [
+      {
+        "field": "domain",
+        "type": "string",
+        "operator": "equal",
+        "value": "vpc"
+      },
+      {
+        "condition": "AND",
+        "rules": [
+          {
+            "field": "private_ip_address",
+            "type": "string",
+            "operator": "equal",
+            "value": null
+          }
+        ]
+      }
+    ]
+  }
+}
+

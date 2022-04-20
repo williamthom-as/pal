@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "optparse"
+require "pal"
+
+include Pal::Configuration
+
+request_config = Config.new
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: pal_cli [options]"
+
+  opts.on("-t", "--template_file=template_file", "Template definition file") do |t|
+    request_config.template_file_loc = t
+  end
+
+  opts.on("-s", "--source_file=source_file", "Source file") do |s|
+    request_config.source_file_loc = s
+  end
+
+  opts.on("-o", "--output_dir=output_dir", "Output directory") do |o|
+    request_config.output_dir = o
+  end
+
+  opts.on("-h", "--help", "Prints this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+request_config.validate
+
+Pal.logger.info "Config loaded successfully"
+register_config(request_config)
