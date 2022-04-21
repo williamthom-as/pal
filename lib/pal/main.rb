@@ -23,7 +23,6 @@ module Pal
     def setup
       @runbook = create_runbook(config.template_file_loc)
       @manager = create_service_manager
-
     end
 
     def reset
@@ -48,9 +47,8 @@ module Pal
 
     # @return [Pal::Handler::Manager]
     def create_service_manager
-      name = "AwsCur"
-      clazz_name = "Pal::Handler::#{name}HandlerImpl"
-      impl = Kernel.const_get(clazz_name).new
+      clazz_name = "Pal::Handler::#{@runbook.metadata.handler}HandlerImpl"
+      impl = Kernel.const_get(clazz_name).new(@runbook)
       Pal::Handler::Manager.new(impl)
     rescue StandardError => e
       Pal.logger.error("Error creating service manager")

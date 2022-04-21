@@ -15,12 +15,13 @@ module Pal
         @rule = RuleFactory.from_hash(filters)
       end
 
-      # @param [Hash{Symbol->String}] object
+      # @param [Array] row
+      # @param [Hash] column_headers
       # @return [Boolean]
-      def test_property(object)
+      def test_property(row, column_headers)
         return true if @rule.nil?
 
-        eval_ctx = EvaluationContext.new(object)
+        eval_ctx = EvaluationContext.new(row, column_headers)
         @rule.evaluate(eval_ctx)
       end
     end
@@ -133,8 +134,10 @@ module Pal
         operator_candidates = get_operators_for_type(@type)
         return true if operator_candidates.keys.empty?
 
-        tokens = @field.split(".").map(&:to_sym)
-        property = eval_ctx.object.dig(*tokens)
+        # tokens = @field.split(".").map(&:to_sym)
+        property = eval_ctx.get_value(@field)
+        return false unless property
+
         proc = operator_candidates.fetch(@operator, proc {|_x, _y| raise "Invalid operator given - #{@operator}" })
 
         converted_property = convert_property(@type, property)
@@ -226,14 +229,16 @@ module Pal
     end
 
     class EvaluationContext
-      attr_accessor :object
+      attr_accessor :row, :column_headers
 
-      def initialize(obj)
-        @object = obj
+      def initialize(row, column_headers)
+        @row = row
+        @column_headers = column_headers
       end
 
       def get_value(key)
-        @object.fetch(key, nil)
+        idx = @column_headers.fetch(key, -1)
+        idx.positive? ? @row[idx] : nil
       end
     end
   end

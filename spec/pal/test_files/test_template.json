@@ -1,25 +1,38 @@
 {
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "Test Template",
+    "handler" : "AwsCur",
+    "description" : "Testing template for Rspec tests"
+  },
   "filters":  {
     "condition": "OR",
     "rules": [
       {
-        "field": "domain",
+        "field": "lineItem/UsageType",
         "type": "string",
         "operator": "equal",
-        "value": "vpc"
+        "value": "APS2-AFS1-AWS-Out-Bytes"
       },
       {
         "condition": "AND",
         "rules": [
           {
-            "field": "private_ip_address",
+            "field": "lineItem/UsageType",
             "type": "string",
             "operator": "equal",
-            "value": null
+            "value": "APS2-AFS2-AWS-Out-Bytes"
           }
         ]
       }
     ]
+  },
+  "export" : {
+    "types" : [{
+      "name" : "csv",
+      "settings" : []
+    }],
+    "properties" : []
   }
 }
 

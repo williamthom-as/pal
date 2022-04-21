@@ -6,14 +6,18 @@ RSpec.describe Pal::Main do
     @conf.source_file_loc = "/home/william/Downloads/cur.csv"
     @conf.template_file_loc = "spec/pal/test_files/test_template.json"
     @conf.output_dir = "/tmp/pal"
+
+    @main = Pal::Main.new(@conf)
+    @main.setup
   end
 
   describe "#setup" do
-    it "should construct from policy" do
-      main = Pal::Main.new(@conf)
-      main.setup
+    it "should init and store runbook policy" do
+      expect(@main.runbook.class).to eq(Pal::Request::Runbook)
+    end
 
-      expect(main.runbook.class).to eq(Pal::Request::Runbook)
+    it "should init and store manager" do
+      expect(@main.manager.class).to eq(Pal::Handler::Manager)
     end
   end
 end

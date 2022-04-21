@@ -8,7 +8,7 @@ module Pal
 
       # @param [BaseHandlerImpl] handler
       def initialize(handler)
-        raise TypeError.new("Service must be type of BaseServiceImpl") unless service.is_a? BaseHandlerImpl
+        raise TypeError.new("Service must be type of BaseServiceImpl") unless handler.is_a? BaseHandlerImpl
 
         @handler = handler
       end
@@ -16,6 +16,7 @@ module Pal
       # @return [Array]
       # @param [Pal::Request::Runbook] runbook
       def execute(runbook)
+        Pal.logger.info("Beginning execution of playbook ...")
         @handler.execute(runbook)
       end
     end
