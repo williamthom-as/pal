@@ -31,6 +31,7 @@ module Pal
 
       # @param [Hash] rule_hash
       # @return [Rule]
+      # rubocop:disable Metrics/AbcSize
       def self.from_hash(rule_hash)
         return nil if rule_hash.nil? || rule_hash.keys.empty?
 
@@ -48,6 +49,7 @@ module Pal
 
         raise "Hash is malformed."
       end
+      # rubocop:enable Metrics/AbcSize
 
       # @return [Array<Rule>]
       def self.from_group_rules(group_rule)
@@ -192,8 +194,8 @@ module Pal
           not_ends_with: proc { |x, y| !x.end_with?(y) },
           contains: proc { |x, y| x.include?(y) },
           not_contains: proc { |x, y| !x.include?(y) },
-          is_empty: proc { |x, y| x.empty?(y) },
-          is_not_empty: proc { |x, y| !x.empty?(y) }
+          is_empty: proc { |x, y| x.empty? },
+          is_not_empty: proc { |x, y| !x.empty? }
         }
       end
 

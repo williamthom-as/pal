@@ -8,6 +8,8 @@ require "pal/common/safe_hash_parser"
 module Pal
   module Operation
     class Exporter
+      include Log
+
       # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
       attr_reader :export_types
 
@@ -22,6 +24,7 @@ module Pal
       # @param [Array] rows
       # @param [Hash] column_headers
       def perform_export(rows, column_headers)
+        log_info("Performing export of #{rows.size}")
         @export_types.each { |t| t.run_export(rows, column_headers, @properties) }
       end
 
@@ -41,6 +44,7 @@ module Pal
 
     class BaseExportHandlerImpl
       include Pal::Configuration
+      include Pal::Log
 
       # @return [Array<Hash>] settings
       attr_accessor :settings
@@ -55,14 +59,14 @@ module Pal
       # @param [Array<String>] properties
       # Extract values, call export.
       def run_export(rows, column_headers, properties)
-        results = _extract(rows, column_headers, properties)
+        rows, columns = extract(rows, column_headers, properties)
 
-        if results.empty?
+        if rows.empty?
           Pal.logger.warn("No results were found, will not export to file.")
           return
         end
 
-        _export(results)
+        _export(rows, columns)
       end
 
       protected
@@ -70,22 +74,30 @@ module Pal
       # @param [Array] rows
       # @param [Hash] column_headers
       # @param [Array<String>] properties
-      # @return [Array<Hash<String,String>]
-      # rubocop:disable Metrics/CyclomaticComplexity
-      def _extract(rows, column_headers, properties)
-        rows.map do |struct|
-          hash_val = {}
-          property_exists = get_lookup_proc(struct)
-          properties&.each do |prop|
-            hash_val[prop.to_sym] = property_exists.call(prop)
+      # @return [Array]
+      def extract(rows, column_headers, properties)
+        all_columns = column_headers.keys
+
+        extractable_properties = {}
+        properties.each do |property|
+          unless all_columns.include? property
+            log_warn("[#{property}] not found in column headers.")
+            next
           end
 
-          hash_val
+          extractable_properties[property] = column_headers[property]
         end
-      end
-      # rubocop:enable Metrics/CyclomaticComplexity
 
-      def _export(_results)
+        extracted_rows = rows.map do |row|
+          extractable_properties.map do |_key, value|
+            row[value] || "<Missing>"
+          end
+        end
+
+        [extracted_rows, extractable_properties]
+      end
+
+      def _export(_rows, _columns)
         raise "Not implemented here"
       end
 
@@ -139,7 +151,15 @@ module Pal
       end
     end
 
-    require "json"
+    require "terminal-table"
+
+    class TableExporterImpl < BaseExportHandlerImpl
+
+      def _export(rows, column_headers)
+        table = Terminal::Table.new(title: "AWS CUR", headings: column_headers.keys, rows: rows, style: @settings)
+        puts table
+      end
+    end
 
     # do json exporter
   end

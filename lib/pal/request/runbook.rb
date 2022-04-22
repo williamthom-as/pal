@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "pal/operation/filter_evaluator"
+require "pal/operation/exporter"
 require "pal/request/metadata"
 require "pal/common/object_helpers"
 require "json"
@@ -16,8 +17,8 @@ module Pal
       # @return [Pal::Operation::FilterEvaluator]
       attr_reader :filters
 
-      # @return [Pal::Request::Extraction]
-      attr_reader :extraction
+      # @return [Pal::Operation::Exporter]
+      attr_reader :exporter
 
       # @param [Array<Hash>] filter_hash
       def filters=(filter_hash)
@@ -30,8 +31,8 @@ module Pal
       end
 
       # @param [Hash] opts
-      def extraction=(opts)
-        @extraction = Pal::Request::Extraction.new(opts)
+      def exporter=(opts)
+        @exporter = Pal::Operation::Exporter.new(opts["types"], opts["properties"])
       end
     end
   end

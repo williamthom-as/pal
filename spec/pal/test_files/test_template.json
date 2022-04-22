@@ -6,33 +6,40 @@
     "description" : "Testing template for Rspec tests"
   },
   "filters":  {
-    "condition": "OR",
+    "condition": "AND",
     "rules": [
       {
-        "field": "lineItem/UsageType",
+        "field": "lineItem/ProductCode",
         "type": "string",
         "operator": "equal",
-        "value": "APS2-AFS1-AWS-Out-Bytes"
-      },
-      {
-        "condition": "AND",
-        "rules": [
-          {
-            "field": "lineItem/UsageType",
-            "type": "string",
-            "operator": "equal",
-            "value": "APS2-AFS2-AWS-Out-Bytes"
-          }
-        ]
+        "value": "awskms"
+      },{
+        "field": "lineItem/BlendedCost",
+        "type": "number",
+        "operator": "greater",
+        "value": 0
       }
     ]
   },
-  "export" : {
+  "actions" : {
+    "group_by" : ["lineItem/UsageAccountId", "lineItem/ResourceId"],
+    "action" : {
+      "type" : "sum",
+      "property" : "lineItem/BlendedCost"
+    }
+  },
+  "exporter" : {
     "types" : [{
-      "name" : "csv",
+      "name" : "table",
       "settings" : []
     }],
-    "properties" : []
+    "properties" : [
+      "bill/BillingPeriodStartDate",
+      "lineItem/ResourceId",
+      "lineItem/UsageAccountId",
+      "lineItem/Operation",
+      "lineItem/LineItemDescription",
+      "lineItem/BlendedCost"
+    ]
   }
 }
-

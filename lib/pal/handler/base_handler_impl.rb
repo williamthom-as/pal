@@ -3,16 +3,17 @@
 module Pal
   module Handler
     class BaseHandlerImpl
-      include Pal::Configuration
+      include Configuration
+      include Log
 
       # @param [Pal::Request::Runbook] runbook
       def initialize(runbook)
         @runbook = runbook
       end
 
-      # @return [Array]
+      # @return [Operation::ProcessorContext]
       def execute
-        candidates = []
+        ctx = Operation::ProcessorContext.new
 
         # Get CSV parser
         # Each impl needs to return a hash of candidate columns and values
@@ -20,12 +21,13 @@ module Pal
         # Extract values
 
         # Different impls may choose to stream file, so we hand in a location and let it decide.
-        _parse_file(_csv_processor(config.source_file_loc)) do |row, ctx|
-          candidates << row if should_include?(@runbook.filters, row, ctx.column_headers)
+        _parse_file(ctx, _csv_processor(config.source_file_loc)) do |row|
+          ctx.add_candidate(row) if should_include?(@runbook.filters, row, ctx.column_headers)
         end
 
-        Pal.logger.info "Process completed with #{candidates.size} candidate records found."
-        candidates
+        log_info "Process completed with #{ctx.candidates.size} candidate records found."
+
+        ctx
       end
 
       # @return [Boolean]
@@ -39,10 +41,11 @@ module Pal
 
       protected
 
+      # @param [ProcessorContext] _ctx
       # @param [CSVProcessor] _processor
-      # @param [Proc] block
+      # @param [Proc] _block
       # @return [Hash]
-      def _parse_file(_processor, &block)
+      def _parse_file(_ctx, _processor, &_block)
         raise "Not implemented here!"
       end
 
@@ -52,15 +55,7 @@ module Pal
         raise "Not implemented here!"
       end
 
-      # # @param [Pal::Operation::FilterEvaluator] filters
-      # # @param [Hash] result
-      # # @return [Boolean]
-      # def _include?(filters, result)
-      #   filters.test_property(result)
-      # end
-
       def _extract_headers; end
-
     end
   end
 end

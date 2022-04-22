@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "pal/operation/processor_context"
 
 RSpec.describe Pal::Operation::RCSVProcessorImpl do
   describe "#new" do
@@ -25,8 +26,8 @@ RSpec.describe Pal::Operation::RCSVProcessorImpl do
     it "should yield each row" do
       fl = "spec/pal/test_files/test_csv.csv"
       pal = Pal::Operation::RCSVProcessorImpl.new(fl)
-
-      pal.parse(header: :none) do |row|
+      ctx = Pal::Operation::ProcessorContext.new
+      pal.parse(ctx, header: :none) do |row|
         puts row.inspect
       end
     end

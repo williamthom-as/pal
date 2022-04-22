@@ -2,10 +2,12 @@
 
 require "singleton"
 require "json"
+require "pal/log"
 
 module Pal
   # Configuration management module for Pal
   module Configuration
+    include Pal::Log
 
     # @return [Config]
     def config
@@ -17,7 +19,7 @@ module Pal
 
     # @param [Config] request_config
     def register_config(request_config)
-      Pal.logger.info "Setting config"
+      log_info "Setting config"
       ConfigurationSource.instance.load_config(request_config)
     end
 

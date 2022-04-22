@@ -3,6 +3,7 @@
 module Pal
   module Handler
     class Manager
+      include Log
 
       attr_accessor :handler
 
@@ -13,11 +14,15 @@ module Pal
         @handler = handler
       end
 
-      # @return [Array]
       # @param [Pal::Request::Runbook] runbook
       def execute(runbook)
         Pal.logger.info("Beginning execution of playbook ...")
-        @handler.execute(runbook)
+        ctx = @handler.execute
+
+        log_info "No exporter defined." unless runbook.exporter
+        log_info "No candidates found." unless ctx.candidates.size.positive?
+
+        runbook.exporter.perform_export(ctx.candidates, ctx.column_headers)
       end
     end
   end

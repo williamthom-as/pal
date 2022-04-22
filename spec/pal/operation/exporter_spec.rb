@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "pal/common/local_file_utils"
 
 RSpec.describe Pal::Operation::Exporter do
   before :all do
@@ -16,8 +17,20 @@ RSpec.describe Pal::Operation::Exporter do
     @exporter = Pal::Operation::Exporter.new(vals["types"], vals["properties"])
   end
 
+  after :all do
+    Pal::Common::LocalFileUtils.clean_dir("/tmp/pal")
+  end
+
   describe "#new" do
     it "should load from map" do
+      expect(@exporter.export_types.size).to eq(1)
+      expect(@exporter.export_types[0].class).to eq(Pal::Operation::CsvExporterImpl)
+      expect(@exporter.properties.size).to eq(0)
+    end
+  end
+
+  describe "#perform_export" do
+    it "should perform export to set conditions" do
       expect(@exporter.export_types.size).to eq(1)
       expect(@exporter.export_types[0].class).to eq(Pal::Operation::CsvExporterImpl)
       expect(@exporter.properties.size).to eq(0)

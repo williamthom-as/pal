@@ -21,11 +21,11 @@ module Pal
         @csv_file_location = csv_file_location
       end
 
+      # @param [ProcessorContext] ctx
       # @param [Proc] block
       # @param [Hash] opts
-      def parse(opts={}, &block)
-        parse_context = ProcessorContext.new
-        _parse_impl(parse_context, opts, &block)
+      def parse(ctx, opts={}, &block)
+        _parse_impl(ctx, opts, &block)
       end
 
       private
@@ -66,10 +66,8 @@ module Pal
 
         Rcsv.parse(read_file(@csv_file_location), opts) do |row|
           ctx.row_count += 1
-          yield row, ctx
+          yield row
         end
-
-        ctx
       end
     end
 

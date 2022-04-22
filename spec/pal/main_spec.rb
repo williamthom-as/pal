@@ -3,7 +3,7 @@
 RSpec.describe Pal::Main do
   before :all do
     @conf = Pal::Configuration::Config.new
-    @conf.source_file_loc = "/home/william/Downloads/cur.csv"
+    @conf.source_file_loc = "/home/william/Downloads/full_billing_file.csv"
     @conf.template_file_loc = "spec/pal/test_files/test_template.json"
     @conf.output_dir = "/tmp/pal"
 
@@ -17,6 +17,11 @@ RSpec.describe Pal::Main do
     end
 
     it "should init and store manager" do
+      expect(@main.manager.class).to eq(Pal::Handler::Manager)
+    end
+
+    it "should init and store manager" do
+      @main.process
       expect(@main.manager.class).to eq(Pal::Handler::Manager)
     end
   end

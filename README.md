@@ -41,3 +41,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Pal project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/pal/blob/master/CODE_OF_CONDUCT.md).
+
+## TODO
+- Output functions - translate columns to formatters? 
+```{{ bill/EndPeriod | date }} ```

@@ -15,6 +15,12 @@ module Pal
         path << ".#{extension}"
         File.open(path, "w", &block)
       end
+
+      def self.clean_dir(path)
+        dir = File.dirname(path)
+
+        FileUtils.rm_f(dir) if File.directory?(dir)
+      end
     end
   end
 end
