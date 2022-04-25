@@ -4,11 +4,13 @@ require "pal"
 require "pal/configuration"
 require "pal/common/local_file_utils"
 require "pal/common/safe_hash_parser"
+require "pal/common/object_helpers"
 
 module Pal
   module Operation
     class Exporter
       include Log
+      include ObjectHelpers
 
       # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
       attr_reader :export_types
@@ -16,65 +18,36 @@ module Pal
       # @return [Array<String>]
       attr_accessor :properties
 
-      def initialize(types_conf, export_props)
-        @export_types = create_types(types_conf)
-        @properties = export_props
-      end
+      # @return [Actions]
+      attr_reader :actions
+
+      # def initialize
+      #   @export_types = create_types(opts["types"])
+      #   @action = create_action(opts["actions"] || {})
+      #   @properties = opts["properties"]
+      # end
 
       # @param [Array] rows
       # @param [Hash] column_headers
       def perform_export(rows, column_headers)
         log_info("Performing export of #{rows.size}")
-        @export_types.each { |t| t.run_export(rows, column_headers, @properties) }
+        extracted_rows, extracted_columns = extract(rows, column_headers, @properties)
+
+        if @actions&.processable?
+          log_info("Actions have been defined, going off to extract.")
+          extracted_rows, extracted_columns = @actions.process(extracted_rows, extracted_columns)
+        end
+
+        @export_types.each { |t| t.run_export(extracted_rows, extracted_columns) }
       end
 
       private
-
-      # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
-      def create_types(types_conf)
-        types_conf.map do |type_conf|
-          name = type_conf["name"]
-          settings = type_conf["settings"]
-
-          clazz_name = "Pal::Operation::#{name.to_s.capitalize}ExporterImpl"
-          Kernel.const_get(clazz_name).new(settings)
-        end
-      end
-    end
-
-    class BaseExportHandlerImpl
-      include Pal::Configuration
-      include Pal::Log
-
-      # @return [Array<Hash>] settings
-      attr_accessor :settings
-
-      # @param [Array<Hash>] settings
-      def initialize(settings)
-        @settings = settings
-      end
-
-      # @param [Array] rows
-      # @param [Hash] column_headers
-      # @param [Array<String>] properties
-      # Extract values, call export.
-      def run_export(rows, column_headers, properties)
-        rows, columns = extract(rows, column_headers, properties)
-
-        if rows.empty?
-          Pal.logger.warn("No results were found, will not export to file.")
-          return
-        end
-
-        _export(rows, columns)
-      end
-
-      protected
 
       # @param [Array] rows
       # @param [Hash] column_headers
       # @param [Array<String>] properties
       # @return [Array]
+      # rubocop:disable Metrics/AbcSize
       def extract(rows, column_headers, properties)
         all_columns = column_headers.keys
 
@@ -94,23 +67,37 @@ module Pal
           end
         end
 
-        [extracted_rows, extractable_properties]
-      end
+        new_extractable_properties = {}
+        extractable_properties.keys.each_with_index do |key, idx|
+          new_extractable_properties[key] = idx
+        end
 
-      def _export(_rows, _columns)
-        raise "Not implemented here"
+        [extracted_rows, new_extractable_properties]
       end
-
-      private
+      # rubocop:enable Metrics/AbcSize
 
       # @param [Struct, Hash] lookup
       # @return [Proc<Boolean>]
       # Return a proc that returns boolean if val exists or not
-      def get_lookup_proc(lookup)
+      def lookup_proc(lookup)
         lookup_hash = lookup.is_a?(Hash) ? lookup : lookup.to_h
         proc { |search_prop| SafeParse.extract_from_hash(lookup_hash, search_prop, true, "<Missing>") }
       end
 
+      def actions=(opts)
+        @actions = Pal::Operation::Actions.new.from_hash(opts)
+      end
+
+      # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
+      def types=(types_conf)
+        @export_types = types_conf.map do |type_conf|
+          name = type_conf["name"]
+          settings = type_conf["settings"]
+
+          clazz_name = "Pal::Operation::#{name.to_s.capitalize}ExporterImpl"
+          Kernel.const_get(clazz_name).new(settings)
+        end
+      end
     end
 
     module FileExportable
@@ -125,6 +112,37 @@ module Pal
         end
       end
 
+    end
+
+    class BaseExportHandlerImpl
+      include Pal::Configuration
+      include Pal::Log
+
+      # @return [Array<Hash>] settings
+      attr_accessor :settings
+
+      # @param [Array<Hash>] settings
+      def initialize(settings)
+        @settings = settings
+      end
+
+      # @param [Array] rows
+      # @param [Hash] columns
+      # Extract values, call export.
+      def run_export(rows, columns)
+        if rows.empty?
+          Pal.logger.warn("No results were found, will not export to file.")
+          return
+        end
+
+        _export(rows, columns)
+      end
+
+      protected
+
+      def _export(_rows, _columns)
+        raise "Not implemented here"
+      end
     end
 
     class CsvExporterImpl < BaseExportHandlerImpl

@@ -18,15 +18,13 @@
         "type": "number",
         "operator": "greater",
         "value": 0
+      },{
+        "field": "lineItem/ResourceId",
+        "type": "string",
+        "operator": "is_not_empty",
+        "value": ""
       }
     ]
-  },
-  "actions" : {
-    "group_by" : ["lineItem/UsageAccountId", "lineItem/ResourceId"],
-    "action" : {
-      "type" : "sum",
-      "property" : "lineItem/BlendedCost"
-    }
   },
   "exporter" : {
     "types" : [{
@@ -34,12 +32,19 @@
       "settings" : []
     }],
     "properties" : [
-      "bill/BillingPeriodStartDate",
+      "lineItem/UsageStartDate",
       "lineItem/ResourceId",
       "lineItem/UsageAccountId",
       "lineItem/Operation",
       "lineItem/LineItemDescription",
       "lineItem/BlendedCost"
-    ]
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/UsageAccountId", "lineItem/ResourceId"],
+      "projection" : {
+        "type" : "sum",
+        "property" : "lineItem/BlendedCost"
+      }
+    }
   }
 }

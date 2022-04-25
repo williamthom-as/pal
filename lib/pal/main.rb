@@ -32,7 +32,7 @@ module Pal
     end
 
     def process
-      @manager.execute(@runbook)
+      @manager.process_runbook(@runbook)
     end
 
     # @param [String] file_location

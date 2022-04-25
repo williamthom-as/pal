@@ -8,6 +8,7 @@ require "pal/log"
 require "pal/operation/filter_evaluator"
 require "pal/operation/csv_processor"
 require "pal/operation/exporter"
+require "pal/operation/actions"
 
 require "pal/request/runbook"
 require "pal/handler/manager"

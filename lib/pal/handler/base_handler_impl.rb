@@ -12,7 +12,7 @@ module Pal
       end
 
       # @return [Operation::ProcessorContext]
-      def execute
+      def process_runbook
         ctx = Operation::ProcessorContext.new
 
         # Get CSV parser

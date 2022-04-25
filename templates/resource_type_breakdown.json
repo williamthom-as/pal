@@ -1,0 +1,37 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "Resource Type Breakdown Template",
+    "handler" : "AwsCur",
+    "description" : "Resource type breakdown per day."
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [{
+        "field": "lineItem/BlendedCost",
+        "type": "number",
+        "operator": "greater",
+        "value": 0
+      }
+    ]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : []
+    }],
+    "properties" : [
+      "lineItem/UsageStartDate",
+      "lineItem/ProductCode",
+      "lineItem/UsageType",
+      "lineItem/BlendedCost"
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/ProductCode", "lineItem/UsageType"],
+      "projection" : {
+        "type" : "sum",
+        "property" : "lineItem/BlendedCost"
+      }
+    }
+  }
+}

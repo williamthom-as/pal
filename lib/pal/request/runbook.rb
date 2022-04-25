@@ -2,6 +2,7 @@
 
 require "pal/operation/filter_evaluator"
 require "pal/operation/exporter"
+require "pal/operation/actions"
 require "pal/request/metadata"
 require "pal/common/object_helpers"
 require "json"
@@ -9,7 +10,7 @@ require "json"
 module Pal
   module Request
     class Runbook
-      include Pal::ObjectHelpers
+      include ObjectHelpers
 
       # @return [Pal::Request::Metadata]
       attr_reader :metadata
@@ -19,6 +20,9 @@ module Pal
 
       # @return [Pal::Operation::Exporter]
       attr_reader :exporter
+
+      # @return [Pal::Operation::Actions]
+      attr_reader :actions
 
       # @param [Array<Hash>] filter_hash
       def filters=(filter_hash)
@@ -32,7 +36,14 @@ module Pal
 
       # @param [Hash] opts
       def exporter=(opts)
-        @exporter = Pal::Operation::Exporter.new(opts["types"], opts["properties"])
+        @exporter = Pal::Operation::Exporter.new.from_hash(opts)
+      end
+
+      # @param [Hash] opts
+      def actions=(opts)
+        @actions = Pal::Operation::Actions.new
+        @actions.group_by = opts["group_by"]
+        @actions.action = opts["action"]
       end
     end
   end

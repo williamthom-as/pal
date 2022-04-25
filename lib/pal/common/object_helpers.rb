@@ -14,6 +14,8 @@ module Pal
     end
 
     def from_json(json)
+      return from_hash(json) if json.is_a?(Hash) # Just a guard incase serialisation is done
+
       from_hash(JSON.parse(json))
     end
 

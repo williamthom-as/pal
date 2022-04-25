@@ -6,7 +6,8 @@ RSpec.describe Pal::Handler::AwsCurHandlerImpl do
   before :all do
     @conf = Pal::Configuration::Config.new
     @conf.source_file_loc = "/home/william/Downloads/full_billing_file.csv"
-    @conf.template_file_loc = "spec/pal/test_files/test_template.json"
+    # @conf.template_file_loc = "spec/pal/test_files/test_template.json"
+    @conf.template_file_loc = "templates/resource_type_breakdown.json"
     @conf.output_dir = "/tmp/pal"
 
     @main = Pal::Main.new(@conf)
@@ -17,11 +18,13 @@ RSpec.describe Pal::Handler::AwsCurHandlerImpl do
 
   describe "#setup" do
     it "should init and store runbook policy" do
-      results = @impl.execute
-      expect(results.candidates.size).to eq(3)
+      results = @impl.process_runbook
+      # expect(results.candidates.size).to eq(589)
 
-      Pal::Operation::TableExporterImpl.new({})._export(results.candidates, results.column_headers.keys)
+      @main.runbook.exporter.perform_export(results.candidates, results.column_headers)
 
+      # dont test main, just test export abilities
+      # Pal::Operation::TableExporterImpl.new({}).run_export(results.candidates, results.column_headers)
     end
   end
 

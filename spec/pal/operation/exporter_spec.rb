@@ -14,7 +14,7 @@ RSpec.describe Pal::Operation::Exporter do
     }'
 
     vals = JSON.parse(json)
-    @exporter = Pal::Operation::Exporter.new(vals["types"], vals["properties"])
+    @exporter = Pal::Operation::Exporter.new.from_hash(vals)
   end
 
   after :all do

@@ -20,9 +20,5 @@ RSpec.describe Pal::Main do
       expect(@main.manager.class).to eq(Pal::Handler::Manager)
     end
 
-    it "should init and store manager" do
-      @main.process
-      expect(@main.manager.class).to eq(Pal::Handler::Manager)
-    end
   end
 end

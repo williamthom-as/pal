@@ -15,9 +15,9 @@ module Pal
       end
 
       # @param [Pal::Request::Runbook] runbook
-      def execute(runbook)
+      def process_runbook(runbook)
         Pal.logger.info("Beginning execution of playbook ...")
-        ctx = @handler.execute
+        ctx = @handler.process_runbook
 
         log_info "No exporter defined." unless runbook.exporter
         log_info "No candidates found." unless ctx.candidates.size.positive?

@@ -140,7 +140,7 @@ module Pal
         property = eval_ctx.get_value(@field)
         return false unless property
 
-        proc = operator_candidates.fetch(@operator, proc {|_x, _y| raise "Invalid operator given - #{@operator}" })
+        proc = operator_candidates.fetch(@operator, proc { |_x, _y| raise "Invalid operator given - #{@operator}" })
 
         converted_property = convert_property(@type, property)
         proc.call(converted_property, @comparison_value)
@@ -194,8 +194,8 @@ module Pal
           not_ends_with: proc { |x, y| !x.end_with?(y) },
           contains: proc { |x, y| x.include?(y) },
           not_contains: proc { |x, y| !x.include?(y) },
-          is_empty: proc { |x, y| x.empty? },
-          is_not_empty: proc { |x, y| !x.empty? }
+          is_empty: proc { |x, _y| x.empty? },
+          is_not_empty: proc { |x, _y| !x.empty? }
         }
       end
 
