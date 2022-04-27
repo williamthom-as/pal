@@ -30,7 +30,7 @@ module Pal
       # @param [Array] rows
       # @param [Hash] column_headers
       def perform_export(rows, column_headers)
-        log_info("Performing export of #{rows.size}")
+        log_info("About to extract required data defined in #{rows.size} rows")
         extracted_rows, extracted_columns = extract(rows, column_headers, @properties)
 
         if @actions&.processable?
@@ -38,7 +38,10 @@ module Pal
           extracted_rows, extracted_columns = @actions.process(extracted_rows, extracted_columns)
         end
 
-        @export_types.each { |t| t.run_export(extracted_rows, extracted_columns) }
+        @export_types.each do |t|
+          log_info("Exporting for #{t.class}")
+          t.run_export(extracted_rows, extracted_columns)
+        end
       end
 
       private

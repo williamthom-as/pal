@@ -29,7 +29,7 @@
     "actions" : {
       "group_by" : ["lineItem/ProductCode", "lineItem/UsageType"],
       "projection" : {
-        "type" : "sum",
+        "type" : "max",
         "property" : "lineItem/BlendedCost"
       }
     }

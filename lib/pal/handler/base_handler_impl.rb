@@ -13,12 +13,15 @@ module Pal
 
       # @return [Operation::ProcessorContext]
       def process_runbook
+        log_debug("Processing runbook started, setting up context.")
         ctx = Operation::ProcessorContext.new
 
         # Get CSV parser
         # Each impl needs to return a hash of candidate columns and values
         # Extract headers
         # Extract values
+
+        log_debug("Calling off to parse impl for CSV processing.")
 
         # Different impls may choose to stream file, so we hand in a location and let it decide.
         _parse_file(ctx, _csv_processor(config.source_file_loc)) do |row|
@@ -36,7 +39,7 @@ module Pal
       # @param [Hash] column_headers
       def should_include?(filters, row, column_headers)
         # _include?(filters, row, column_headers)
-        filters.test_property(row, column_headers)
+        filters&.test_property(row, column_headers) || true
       end
 
       protected

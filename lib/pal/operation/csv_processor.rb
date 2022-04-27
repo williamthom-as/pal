@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "pal"
 require "pal/operation/processor_context"
 
 # Processor for CSV extraction
@@ -8,10 +9,12 @@ module Pal
     # Base class for CSV impls, we can define strategy on memory usage needs based on
     # potential issues from file size.
     class CSVProcessor
+      include Pal::Log
 
       # Strategy to return correct type - memory or performance focused.
       # @return [BaseCSVProcessor]
       def self.retrieve_default_processor(csv_file_location)
+        Pal.logger.info("Default processor has been requested. No further action required.")
         RCSVProcessorImpl.new(csv_file_location)
       end
 
@@ -40,6 +43,7 @@ module Pal
       # @param [String] file_location
       # @return [String]
       def read_file(file_location)
+        log_info("Reading file from disk located at #{file_location}")
         File.read(File.expand_path(file_location))
       end
 

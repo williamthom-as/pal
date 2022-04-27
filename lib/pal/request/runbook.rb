@@ -24,9 +24,9 @@ module Pal
       # @return [Pal::Operation::Actions]
       attr_reader :actions
 
-      # @param [Array<Hash>] filter_hash
-      def filters=(filter_hash)
-        @filters = Pal::Operation::FilterEvaluator.new(filter_hash)
+      # @param [Array<Hash>] opts
+      def filters=(opts)
+        @filters = Pal::Operation::FilterEvaluator.new(opts)
       end
 
       # @param [Hash] opts
@@ -41,9 +41,7 @@ module Pal
 
       # @param [Hash] opts
       def actions=(opts)
-        @actions = Pal::Operation::Actions.new
-        @actions.group_by = opts["group_by"]
-        @actions.action = opts["action"]
+        @actions = Pal::Operation::Actions.new.from_hash(opts)
       end
     end
   end

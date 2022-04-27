@@ -28,14 +28,6 @@ RSpec.describe Pal::Operation::Exporter do
       expect(@exporter.properties.size).to eq(0)
     end
   end
-
-  describe "#perform_export" do
-    it "should perform export to set conditions" do
-      expect(@exporter.export_types.size).to eq(1)
-      expect(@exporter.export_types[0].class).to eq(Pal::Operation::CsvExporterImpl)
-      expect(@exporter.properties.size).to eq(0)
-    end
-  end
 end
 
 

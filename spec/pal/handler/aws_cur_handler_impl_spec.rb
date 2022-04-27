@@ -7,7 +7,7 @@ RSpec.describe Pal::Handler::AwsCurHandlerImpl do
     @conf = Pal::Configuration::Config.new
     @conf.source_file_loc = "/home/william/Downloads/full_billing_file.csv"
     # @conf.template_file_loc = "spec/pal/test_files/test_template.json"
-    @conf.template_file_loc = "templates/resource_type_breakdown.json"
+    @conf.template_file_loc = "templates/global_resource_and_usage_type_costs.json"
     @conf.output_dir = "/tmp/pal"
 
     @main = Pal::Main.new(@conf)
