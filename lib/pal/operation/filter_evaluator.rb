@@ -69,8 +69,9 @@ module Pal
 
       private
 
+      # @abstract
       def _evaluate(_eval_ctx)
-        raise "Not Implemented Here"
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
     end

@@ -33,11 +33,12 @@ module Pal
 
       private
 
+      # @abstract
       # @param [ProcessorContext] _ctx
       # @param [Hash] _opts
       # @param [Proc] _block
       def _parse_impl(_ctx, _opts, &_block)
-        raise "Not implemented here"
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
       # @param [String] file_location

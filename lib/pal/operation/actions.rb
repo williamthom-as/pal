@@ -11,8 +11,8 @@ module Pal
       # @return [Array<String>]
       attr_accessor :group_by
 
-      # @return [Array<String>]
-      attr_accessor :order_by
+      # @return [String]
+      attr_accessor :sort_by
 
       # @return [ProjectionImpl]
       attr_reader :projection
@@ -37,6 +37,8 @@ module Pal
 
         log_info("Performing projection by [#{@projection.type}].")
         rows, column_headers = perform_projection(grouped, column_headers)
+        rows, column_headers = perform_sort_by(rows, column_headers)
+
         [rows, column_headers]
       end
 
@@ -52,7 +54,7 @@ module Pal
 
       # @param [Array] rows
       # @param [Hash] column_headers
-      # @return [Hash] rows, column_headers
+      # @return [Hash] group_by_map
       def perform_group_by(rows, column_headers)
         log_info("Performing grouping by #{@group_by} across a total of #{rows.size} has been provided.")
 
@@ -65,6 +67,21 @@ module Pal
         end
 
         group_by_map
+      end
+
+      # @param [Array] rows
+      # @param [Hash] column_headers
+      # @return [Array] rows, column_headers
+      def perform_sort_by(rows, column_headers)
+        log_info("Performing sort by #{@sort_by} across a total of #{rows.size} has been provided.")
+        return [rows, column_headers] if @sort_by.nil?
+
+        sort_idx = column_headers[@sort_by]
+        rows.sort_by! do |a|
+          a[sort_idx]
+        end
+
+        [rows.reverse, column_headers]
       end
 
       # Take a row, extract the props, return a key
@@ -104,12 +121,13 @@ module Pal
 
       private
 
+      # @abstract
       # @param [Array<String>] _group_by_rules
       # @param [Hash] _groups
       # @param [Hash] _column_headers
       # @return [Array] rows, column_headers
       def _process_impl(_group_by_rules, _groups, _column_headers)
-        raise "Not implemented in base class"
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
     end
 
@@ -151,7 +169,7 @@ module Pal
 
         column_headers = {}
         group_by_rules.each_with_index { |gb, idx| column_headers[gb] = idx }
-        column_headers["sum_#{@property}"] = group_by_rules.size + 1
+        column_headers["sum_#{@property}"] = group_by_rules.size
 
         [rows, column_headers]
       end
@@ -190,21 +208,16 @@ module Pal
       end
     end
 
-    class MaxProjectionImpl < ProjectionImpl
-
-      def initialize(property)
-        super("max", property)
-      end
+    class MaxMinProjectionImpl < ProjectionImpl
 
       private
 
-      # @param [Array<String>] group_by_rules
+      # @param [Array<String>] _group_by_rules
       # @param [Hash] groups
       # @param [Hash] column_headers
       # @return [Array] rows, column_headers
       # rubocop:disable Metrics/AbcSize
-      def _process_impl(group_by_rules, groups, column_headers)
-        rows = []
+      def _process_impl(_group_by_rules, groups, column_headers)
         max_vals = {}
         max_column_idx = column_headers[@property]
 
@@ -214,29 +227,53 @@ module Pal
           row.each do |entry|
             prop_val = entry[max_column_idx].to_f
 
-            max_vals[key] = 0.0 unless max_vals.key?(key)
-            max_vals[key] = prop_val if prop_val > max_vals[key] # put in a proc to reduce code use
+            max_vals[key] = entry unless max_vals.key?(key)
+            max_vals[key] = entry if comparator_proc.call(max_vals[key][0][max_column_idx].to_f, prop_val)
           end
-
-          arr = []
-          group_by_rules.each do |gb|
-            idx = column_headers[gb]
-            arr << row[0][idx]
-          end
-          # arr << sum
-          # rows << arr
         end
 
-        # column_headers = {}
-        # group_by_rules.each_with_index { |gb, idx| column_headers[gb] = idx }
-        # column_headers["max_#{@property}"] = group_by_rules.size + 1
+        rows = max_vals.values
 
-        [[], column_headers]
+        new_column_headers = {}
+        column_headers.keys.each_with_index { |ch, idx| new_column_headers[ch] = idx }
+
+        [rows, new_column_headers]
       end
       # rubocop:enable Metrics/AbcSize
+      #
+
+      def comparator_proc
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+      end
     end
 
+    class MaxProjectionImpl < MaxMinProjectionImpl
+
+      def initialize(property)
+        super("max", property)
+      end
+
+      private
+
+      def comparator_proc
+        proc { |x, y| x > y }
+      end
+
+    end
+
+    class MinProjectionImpl < MaxMinProjectionImpl
+
+      def initialize(property)
+        super("min", property)
+      end
+
+      private
+
+      def comparator_proc
+        proc { |x, y| x < y }
+      end
+
+    end
 
   end
 end
-

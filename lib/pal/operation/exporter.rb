@@ -143,8 +143,9 @@ module Pal
 
       protected
 
+      # @abstract
       def _export(_rows, _columns)
-        raise "Not implemented here"
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
     end
 
@@ -177,7 +178,10 @@ module Pal
     class TableExporterImpl < BaseExportHandlerImpl
 
       def _export(rows, column_headers)
-        table = Terminal::Table.new(title: "AWS CUR", headings: column_headers.keys, rows: rows, style: @settings)
+        title = @settings["title"] || "<No Title Set>"
+        style = @settings["style"] || {}
+
+        table = Terminal::Table.new(title: title, headings: column_headers.keys, rows: rows, style: style)
         puts table
       end
     end

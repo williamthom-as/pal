@@ -1,6 +1,7 @@
 require "pal/operation/exporter"
+require "pal/handler/base_handler_impl"
 
-RSpec.describe Pal::Handler::AwsCurHandlerImpl do
+RSpec.describe Pal::Handler::BaseHandlerImpl do
   include Pal::Configuration
 
   before :all do

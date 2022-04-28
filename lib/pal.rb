@@ -12,7 +12,6 @@ require "pal/operation/actions"
 
 require "pal/request/runbook"
 require "pal/handler/manager"
-require "pal/handler/aws_cur_handler_impl"
 
 require "logger"
 

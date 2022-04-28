@@ -3,7 +3,7 @@
     "version" : "2022-04-02",
     "name" : "Resource Type Breakdown Template",
     "handler" : "AwsCur",
-    "description" : "Resource type breakdown per day."
+    "description" : "Resource and usage type breakdown by cost."
   },
   "filters":  {
     "condition": "AND",
@@ -18,7 +18,9 @@
   "exporter" : {
     "types" : [{
       "name" : "table",
-      "settings" : []
+      "settings" : {
+        "title" : "AWS CUR Resource/Usage Type Combined Costs"
+      }
     }],
     "properties" : [
       "lineItem/UsageStartDate",
@@ -28,8 +30,9 @@
     ],
     "actions" : {
       "group_by" : ["lineItem/ProductCode", "lineItem/UsageType"],
+      "sort_by" : "sum_lineItem/BlendedCost",
       "projection" : {
-        "type" : "max",
+        "type" : "sum",
         "property" : "lineItem/BlendedCost"
       }
     }
