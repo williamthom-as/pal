@@ -21,13 +21,13 @@ Provide these to Pal as arguments as follows:
 
     $ pal -t /file/path/to/template.json -i /file/path/to/billing_file.csv -o /my/output/folder
 
-###Example
+## Example
 
 Below shows the template and export from a simple request. 
 
 It shows grouping all records from an AWS Cost and Usage Report by product and usage type, summing blended cost fields.
 
-####Template
+#### Template
 ```json
 {
   ...
@@ -64,7 +64,7 @@ It shows grouping all records from an AWS Cost and Usage Report by product and u
 ```
 *Find full template [here](templates/global_resource_and_usage_type_costs.json)*.
 
-####Exported
+#### Exported
 ```bash
 +------------------------------------------------------------------------------------+
 |                     AWS CUR Product/Usage Type Combined Costs                      |
