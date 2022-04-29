@@ -29,7 +29,13 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-request_config.validate
+begin
+  request_config.validate
+rescue Pal::ValidationError
+  Pal.logger.error("The request provided was invalid, please fix the validation errors and try again.")
+  return
+end
+
 
 Pal.logger.info "Config loaded successfully"
 register_config(request_config)
