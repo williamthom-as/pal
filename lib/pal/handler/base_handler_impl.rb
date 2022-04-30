@@ -15,6 +15,7 @@ module Pal
       def process_runbook
         log_debug("Processing runbook started, setting up context.")
         ctx = Operation::ProcessorContext.new
+        ctx.column_type_definitions = open_definition_file || {}
 
         # Get CSV parser
         # Each impl needs to return a hash of candidate columns and values
@@ -42,6 +43,17 @@ module Pal
         filters.test_property(row, column_headers)
       end
 
+      # @return [Hash, nil]
+      def open_definition_file
+        path = File.join(File.dirname(__FILE__), "definitions/#{_type}.json")
+        return nil unless File.exist?(path)
+
+        JSON.parse(File.read(path))
+      rescue StandardError => e
+        log_error("Cannot parse definition file for [#{_type}].", e)
+        nil
+      end
+
       protected
 
       # @abstract
@@ -60,7 +72,14 @@ module Pal
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
+      # @abstract
+      # @return [String]
+      def _type
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+      end
+
       def _extract_headers; end
+
     end
 
     class AwsCurHandlerImpl < BaseHandlerImpl
@@ -76,6 +95,7 @@ module Pal
       # eg. { col_name: col_value, col_name_2: col_value_2 }
       def _parse_file(ctx, csv_processor, &_block)
         log_info("Starting to process file, using #{csv_processor.class} processor for AWS CUR file.")
+
         csv_processor.parse(ctx, header: :none) do |row|
           if ctx.row_count == 1
             ctx.extract_column_headers(row)
@@ -90,6 +110,11 @@ module Pal
       # @return [CSVProcessor]
       def _csv_processor(source_file_loc)
         CSVProcessor.retrieve_default_processor(source_file_loc)
+      end
+
+      # @return [String]
+      def _type
+        "aws_cur"
       end
     end
   end

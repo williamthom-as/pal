@@ -21,17 +21,10 @@ module Pal
       # @return [Actions]
       attr_reader :actions
 
-      # def initialize
-      #   @export_types = create_types(opts["types"])
-      #   @action = create_action(opts["actions"] || {})
-      #   @properties = opts["properties"]
-      # end
-
-      # @param [Array] rows
-      # @param [Hash] column_headers
-      def perform_export(rows, column_headers)
-        log_info("About to extract required data defined in #{rows.size} rows")
-        extracted_rows, extracted_columns = extract(rows, column_headers, @properties)
+      # @param [Pal::Operation::ProcessorContext] ctx
+      def perform_export(ctx)
+        log_info("About to extract required data defined in #{ctx.candidates.size} rows")
+        extracted_rows, extracted_columns = extract(ctx, @properties)
 
         if @actions&.processable?
           log_info("Actions have been defined, going off to extract.")
@@ -46,13 +39,11 @@ module Pal
 
       private
 
-      # @param [Array] rows
-      # @param [Hash] column_headers
       # @param [Array<String>] properties
       # @return [Array]
       # rubocop:disable Metrics/AbcSize
-      def extract(rows, column_headers, properties)
-        all_columns = column_headers.keys
+      def extract(ctx, properties)
+        all_columns = ctx.column_headers.keys
 
         extractable_properties = {}
         properties.each do |property|
@@ -61,12 +52,13 @@ module Pal
             next
           end
 
-          extractable_properties[property] = column_headers[property]
+          extractable_properties[property] = ctx.column_headers[property]
         end
 
-        extracted_rows = rows.map do |row|
-          extractable_properties.map do |_key, value|
-            row[value] || "<Missing>"
+        extracted_rows = ctx.candidates.map do |row|
+          extractable_properties.map do |key, value_idx|
+            value = row[value_idx]
+            value ? ctx.cast(key, value) : "<Missing>"
           end
         end
 

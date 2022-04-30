@@ -22,7 +22,7 @@ module Pal
         log_info "No exporter defined." unless runbook.exporter
         log_info "No candidates found." unless ctx.candidates.size.positive?
 
-        runbook.exporter.perform_export(ctx.candidates, ctx.column_headers)
+        runbook.exporter.perform_export(ctx)
       end
     end
   end
