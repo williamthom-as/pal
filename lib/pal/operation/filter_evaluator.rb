@@ -156,7 +156,7 @@ module Pal
         when :number
           number_operators
         when :date
-          number_operators
+          date_operators
         when :tag
           tag_operators
         else
@@ -210,9 +210,10 @@ module Pal
           greater: proc { |x, y| x > y },
           greater_or_equal: proc { |x, y| x >= y },
           between: proc { |x, y| x.is_a? Array ? x.between?(y.first, z.last) : false },
-          not_between: proc { |x, y| x.is_a? Array ? !x.between?(y.first, z.last) : false },
+          not_between: proc { |x, y| x.is_a? Array ? !x.between?(y.first, z.last) : false }
         }
       end
+      alias date_operators number_operators
 
       # @return [Hash{Symbol->Proc}]
       def tag_operators
@@ -241,7 +242,7 @@ module Pal
 
       def get_value(key)
         idx = @column_headers.fetch(key, -1)
-        idx.positive? ? @row[idx] : nil
+        idx.zero? || idx.positive? ? @row[idx] : nil
       end
     end
   end

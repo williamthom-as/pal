@@ -25,6 +25,8 @@ module Pal
         log.progname = name
       end
     end
+
+
   end
 
   # Exception classes
@@ -37,4 +39,7 @@ module Pal
     end
   end
 
+  class PluginManager
+
+  end
 end

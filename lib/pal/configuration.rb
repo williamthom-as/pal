@@ -49,8 +49,8 @@ module Pal
         # Add directory validation
         # Check billing file is a valid billing file
         errors = []
-        errors << "Missing property: template file [-c]." unless @template_file_loc
-        errors << "Missing property: input file [-i]." unless @source_file_loc
+        errors << "Missing property: template file [-t]." unless @template_file_loc
+        errors << "Missing property: input file [-s]." unless @source_file_loc
         errors << "File not found: billing file must exist" unless File.exist?(@source_file_loc || "")
         errors
       end

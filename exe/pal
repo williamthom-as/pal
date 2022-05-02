@@ -5,6 +5,7 @@ require "optparse"
 require "pal"
 
 include Pal::Configuration
+include Pal::Log
 
 request_config = Config.new
 
@@ -32,10 +33,17 @@ end.parse!
 begin
   request_config.validate
 rescue Pal::ValidationError
-  Pal.logger.error("The request provided was invalid, please fix the validation errors and try again.")
+  log_error("The request provided was invalid, please fix the validation errors and try again.")
   return
 end
 
+log_info "Config loaded successfully"
+main = Pal::Main.new(request_config)
 
-Pal.logger.info "Config loaded successfully"
-register_config(request_config)
+log_info "Setting up runbooks to be processed ..."
+main.setup
+
+log_info "... set up complete. Beginning process"
+main.process
+
+
