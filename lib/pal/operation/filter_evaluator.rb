@@ -135,13 +135,13 @@ module Pal
       # @return [Boolean]
       def _evaluate(eval_ctx)
         operator_candidates = get_operators_for_type(@type)
-        return true if operator_candidates.keys.empty?
 
-        # tokens = @field.split(".").map(&:to_sym)
         property = eval_ctx.get_value(@field)
         return false unless property
 
-        proc = operator_candidates.fetch(@operator, proc { |_x, _y| raise "Invalid operator given - #{@operator}" })
+        proc = operator_candidates.fetch(@operator, proc do |_x, _y|
+          raise "Invalid operator given - [#{@operator}]. Valid candidates are [#{operator_candidates.keys.join(", ")}]"
+        end)
 
         converted_property = convert_property(@type, property)
         proc.call(converted_property, @comparison_value)
@@ -160,7 +160,7 @@ module Pal
         when :tag
           tag_operators
         else
-          {}
+          raise "Missing filter operator for [#{type}], valid candidates: [string, number, tag, date]"
         end
       end
 
@@ -177,7 +177,7 @@ module Pal
         when :date
           Date.parse(prop)
         else
-          {}
+          raise "Missing property operator for [#{type}], valid candidates: [string, number, tag, date]"
         end
       end
 

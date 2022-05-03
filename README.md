@@ -3,11 +3,10 @@ Pal
 
 Pal is a tool for automating simple cloud spend analysis. It provides just enough features to be useful.
 - **Analysis as Code** [*In Progress*]: Describe simple routines to extract, filter and manipulate data from cloud provider spreadsheets.
-  - Export data into common data formats for further analysis or visualisation in a different tool.
-  - Examples of this are provided in our templates folder.
+  - Quickly filter, manipulate and transform your spreadsheet into consumable, understandable insight.
+  - Export filtered data into common data formats for further analysis or visualisation in a different tool.
 - **Forecasting** [*To Do*]: Pipe data from your results into common forecasting algorithms.
 - **Plugins** [*To Do*]: Extend Pal hooks with your own functionality.
-
 
 ## Use Cases
 
@@ -89,13 +88,18 @@ Install it yourself as:
 
     $ gem install pal
 
-If you wish to use Docker, please use the Dockerfile provided. Run:
+### Getting started *quickly*
+To quickly spin up a development environment, please use the Dockerfile provided. Run:
 
     $ sudo docker build -t pal .
-    $ sudo docker run -it --rm pal bash 
+    $ sudo docker run -it --rm pal bash
 
-    $ 
+Please do not forget to mount any volumes which may have templates that you wish to use. Default templates are available too, found under `/app/templates`.
 
+Once set up and connected to your container, run:
+
+    $ pal -t /file/path/to/template.json -s /file/path/to/billing_file.csv -o /my/output/folder
+  
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

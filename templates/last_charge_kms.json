@@ -1,0 +1,52 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "KMS Report",
+    "handler" : "AwsCur",
+    "description" : "Usage counts for KMS"
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [{
+      "field": "lineItem/ProductCode",
+      "type": "string",
+      "operator": "equal",
+      "value": "awskms"
+    },{
+      "field": "lineItem/UsageType",
+      "type": "string",
+      "operator": "ends_with",
+      "value": "KMS-Requests"
+    },{
+      "field": "lineItem/ResourceId",
+      "type": "string",
+      "operator": "begins_with",
+      "value": "arn:aws:kms:"
+    }]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : {
+        "title" : "Usage counts for KMS"
+      }
+    }],
+    "properties" : [
+      "lineItem/UsageType",
+      "lineItem/ProductCode",
+      "product/productFamily",
+      "lineItem/LineItemDescription",
+      "lineItem/ResourceId",
+      "lineItem/BlendedCost",
+      "lineItem/UsageAmount"
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/ProductCode", "product/productFamily", "lineItem/ResourceId"],
+      "sort_by" : "sum_lineItem/UsageAmount",
+      "projection" : {
+        "type" : "sum",
+        "property" : "lineItem/UsageAmount"
+      }
+    }
+  }
+}

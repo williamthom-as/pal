@@ -100,8 +100,8 @@ module Pal
       # @param [String] file_path
       # @param [String] contents
       # @param [String] file_extension
-      def write_to_file(file_path, file_extension, contents)
-        file_location = "#{file_path}/pal-#{Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S%-z")}"
+      def write_to_file(file_path, file_name, file_extension, contents)
+        file_location = "#{file_path}/#{file_name || Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S%-z")}"
         Pal::Common::LocalFileUtils.with_file(file_location, file_extension) do |file|
           file.write(contents)
         end
@@ -144,25 +144,19 @@ module Pal
     class CsvExporterImpl < BaseExportHandlerImpl
       include FileExportable
 
-      # @param [Array<Hash<String,String>] results
-      def _export(results)
+      def _export(rows, column_headers)
         file_contents = []
-        file_contents << column_headers(results)
+        file_contents << column_headers.keys.join(",")
 
-        results.each do |row|
-          file_contents << row.values.join(",")
+        rows.each do |row|
+          file_contents << row.join(",")
         end
 
-        write_to_file(config.output_dir, "csv", file_contents.join("\n"))
+        write_to_file(
+          config.output_dir, @settings["file_name"] || "pal", "csv", file_contents.join("\n")
+        )
       end
 
-      private
-
-      # @param [Array<Hash<String,String>] results
-      # @return [String]
-      def column_headers(results)
-        results.first&.keys&.join(",") || ""
-      end
     end
 
     require "terminal-table"
