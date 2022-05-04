@@ -2,11 +2,11 @@ Pal
 ===
 
 Pal is a tool for automating simple cloud spend analysis. It provides just enough features to be useful.
-- **Analysis as Code** [*In Progress*]: Describe simple routines to extract, filter and manipulate data from cloud provider spreadsheets.
+- **Analysis as Code**: Describe simple routines to extract, filter and manipulate data from cloud provider spreadsheets.
   - Quickly filter, manipulate and transform your spreadsheet into consumable, understandable insight.
   - Export filtered data into common data formats for further analysis or visualisation in a different tool.
+- **Plugins**: Extend Pal hooks with your own functionality. Read more about it [here](plugins/PLUGINS.md).
 - **Forecasting** [*To Do*]: Pipe data from your results into common forecasting algorithms.
-- **Plugins** [*To Do*]: Extend Pal hooks with your own functionality.
 
 ## Use Cases
 

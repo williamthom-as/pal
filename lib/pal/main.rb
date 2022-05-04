@@ -2,13 +2,15 @@
 
 require "pal"
 require "pal/configuration"
+require "pal/plugin/plugin_manager"
 require "pal/handler/base_handler_impl"
 
 module Pal
 
   class Main
-    include Configuration
     include Log
+    include Plugin
+    include Configuration
 
     # @return [Pal::Request::Runbook]
     attr_accessor :runbook
@@ -23,6 +25,8 @@ module Pal
 
     # set config for process
     def setup
+      register_plugins
+
       @runbook = create_runbook(config.template_file_loc)
       @manager = create_service_manager
     end

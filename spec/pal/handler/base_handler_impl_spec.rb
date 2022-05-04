@@ -10,7 +10,8 @@ RSpec.describe Pal::Handler::BaseHandlerImpl do
     # @conf.template_file_loc = "spec/pal/test_files/test_template.json"
     # @conf.template_file_loc = "../../templates/global_resource_and_usage_type_costs.json"
     # @conf.template_file_loc = "../../templates/summary_daily_breakdown_costs.json"
-    @conf.template_file_loc = "../../templates/list_of_kms_keys.json"
+    # @conf.template_file_loc = "../../templates/list_of_kms_keys.json"
+    # @conf.template_file_loc = "../../templates/summary_cost_between_date_range.json"
     @conf.output_dir = "/tmp/pal"
 
     @main = Pal::Main.new(@conf)

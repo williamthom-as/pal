@@ -35,6 +35,9 @@
       "settings" : {
         "title" : "AWS CUR Daily Combined Costs"
       }
+    }, {
+      "name" : "terminal",
+      "settings" : {}
     }],
     "properties" : [
       "lineItem/UsageType",

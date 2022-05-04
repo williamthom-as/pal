@@ -32,8 +32,9 @@ module Pal
         end
 
         @export_types.each do |t|
-          log_info("Exporting for #{t.class}")
+          log_info("Exporting for [#{t.class}] triggered ...")
           t.run_export(extracted_rows, extracted_columns)
+          log_info("... export for [#{t.class}] completed")
         end
       end
 
@@ -136,6 +137,8 @@ module Pal
       protected
 
       # @abstract
+      # @param [Array] _rows
+      # @param [Hash] _columns
       def _export(_rows, _columns)
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
@@ -144,6 +147,8 @@ module Pal
     class CsvExporterImpl < BaseExportHandlerImpl
       include FileExportable
 
+      # @param [Array] rows
+      # @param [Hash] column_headers
       def _export(rows, column_headers)
         file_contents = []
         file_contents << column_headers.keys.join(",")
@@ -163,6 +168,8 @@ module Pal
 
     class TableExporterImpl < BaseExportHandlerImpl
 
+      # @param [Array] rows
+      # @param [Hash] column_headers
       def _export(rows, column_headers)
         title = @settings["title"] || "<No Title Set>"
         style = @settings["style"] || {}

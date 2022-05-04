@@ -7,7 +7,7 @@ require "pal/log"
 module Pal
   # Configuration management module for Pal
   module Configuration
-    include Pal::Log
+    include Log
 
     # @return [Config]
     def config

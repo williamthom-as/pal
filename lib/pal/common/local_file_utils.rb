@@ -21,6 +21,10 @@ module Pal
 
         FileUtils.rm_f(dir) if File.directory?(dir)
       end
+
+      def self.open_file(file_location)
+        file_location.start_with?("/") ? file_location : File.join(File.dirname(__FILE__), file_location)
+      end
     end
   end
 end

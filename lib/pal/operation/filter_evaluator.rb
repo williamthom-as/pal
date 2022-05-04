@@ -143,8 +143,10 @@ module Pal
           raise "Invalid operator given - [#{@operator}]. Valid candidates are [#{operator_candidates.keys.join(", ")}]"
         end)
 
+        converted_comparison = convert_property(@type, @comparison_value)
         converted_property = convert_property(@type, property)
-        proc.call(converted_property, @comparison_value)
+
+        proc.call(converted_property, converted_comparison)
       end
 
       # @param [Symbol] type
