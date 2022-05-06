@@ -45,7 +45,8 @@ module Pal
       # @return [String]
       def read_file(file_location)
         log_info("Reading file from disk located at #{file_location}")
-        File.read(File.expand_path(file_location))
+        # File.read(File.expand_path(File.join(File.dirname(__FILE__), file_location)))
+        Common::LocalFileUtils.read_file(file_location)
       end
 
       def stream_file(file_location)

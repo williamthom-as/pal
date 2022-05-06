@@ -22,8 +22,12 @@ module Pal
         FileUtils.rm_f(dir) if File.directory?(dir)
       end
 
-      def self.open_file(file_location)
-        file_location.start_with?("/") ? file_location : File.join(File.dirname(__FILE__), file_location)
+      def self.read_file(file_location)
+        result = file_location.start_with?("/") ? file_location : File.join(File.dirname(__FILE__), file_location)
+
+        raise "No file found at [#{file_location}]" unless File.exist? result
+
+        File.read(result)
       end
     end
   end
