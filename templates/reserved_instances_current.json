@@ -1,0 +1,72 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "handler" : "AwsCur"
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [{
+      "field": "reservation/ReservationARN",
+      "type": "string",
+      "operator": "equal",
+      "value": "arn:aws:ec2:ap-southeast-2:568023799083:reserved-instances/f55f108c-be30-4796-b327-aedfd0db64f9"
+    }]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : {
+        "title" : "AWS CUR Reserved Instance Costs"
+      }
+    }],
+    "properties" : [
+      "lineItem/UsageStartDate",
+      "lineItem/ProductCode",
+      "product/productFamily",
+      "lineItem/UsageType",
+      "lineItem/LineItemDescription",
+      "reservation/AmortizedUpfrontCostForUsage",
+      "reservation/AmortizedUpfrontFeeForBillingPeriod",
+      "reservation/EffectiveCost",
+      "reservation/EndTime",
+      "reservation/ModificationStatus",
+      "reservation/NormalizedUnitsPerReservation",
+      "reservation/NumberOfReservations",
+      "reservation/RecurringFeeForUsage",
+      "reservation/ReservationARN",
+      "reservation/StartTime",
+      "reservation/SubscriptionId",
+      "reservation/TotalReservedNormalizedUnits",
+      "reservation/TotalReservedUnits",
+      "reservation/UnitsPerReservation",
+      "reservation/UnusedAmortizedUpfrontFeeForBillingPeriod",
+      "reservation/UnusedNormalizedUnitQuantity",
+      "reservation/UnusedQuantity",
+      "reservation/UnusedRecurringFee",
+      "reservation/UpfrontValue"
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/UsageStartDate", "reservation/ReservationARN"],
+      "sort_by" : "reservation/ReservationARN",
+      "projection" : {
+        "type" : "sum",
+        "property" : "reservation/AmortizedUpfrontCostForUsage"
+      }
+    }
+  },
+  "__comments" : {
+    "actions" : {
+      "group_by" : ["bill/BillingPeriodStartDate","reservation/SubscriptionId", "reservation/ReservationARN"],
+      "sort_by" : "reservation/ReservationARN",
+      "projection" : {
+        "type" : "sum",
+        "property" : "reservation/AmortizedUpfrontCostForUsage"
+      }
+    }
+  }
+}
+
+
+
+
+

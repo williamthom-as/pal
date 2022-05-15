@@ -19,7 +19,7 @@ module Pal
 
       def projection=(opts)
         clazz_name = "Pal::Operation::#{opts["type"]&.to_s&.capitalize || "Default"}ProjectionImpl"
-        @projection = Kernel.const_get(clazz_name).new(opts["property"])
+        @projection = Kernel.const_get(clazz_name).new(opts["property"] || nil)
       end
 
       def processable?
@@ -77,6 +77,9 @@ module Pal
         return [rows, column_headers] if @sort_by.nil?
 
         sort_idx = column_headers[@sort_by]
+
+        raise "Missing [#{@sort_by}] in group_by properties." if sort_idx.nil? || sort_idx.negative?
+
         rows.sort_by! do |a|
           a[sort_idx]
         end
@@ -275,5 +278,20 @@ module Pal
 
     end
 
+    class DefaultProjectionImpl < ProjectionImpl
+
+      def initialize(property)
+        super("default", property)
+      end
+
+      # @param [Array<String>] _group_by_rules
+      # @param [Hash] groups
+      # @param [Hash] column_headers
+      # @return [Array] rows, column_headers
+      def _process_impl(_group_by_rules, groups, column_headers)
+        [groups.values, column_headers]
+      end
+
+    end
   end
 end
