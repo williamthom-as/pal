@@ -8,11 +8,11 @@
   "filters":  {
     "condition": "AND",
     "rules": [{
-        "field": "lineItem/BlendedCost",
-        "type": "number",
-        "operator": "greater",
-        "value": 0
-      },{
+      "field": "lineItem/BlendedCost",
+      "type": "number",
+      "operator": "greater",
+      "value": 0
+    },{
       "field": "lineItem/ProductCode",
       "type": "string",
       "operator": "equal",
@@ -35,9 +35,6 @@
       "settings" : {
         "title" : "AWS CUR Daily Combined Costs"
       }
-    }, {
-      "name" : "terminal",
-      "settings" : {}
     }],
     "properties" : [
       "lineItem/UsageType",
