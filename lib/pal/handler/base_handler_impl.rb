@@ -14,6 +14,7 @@ module Pal
       end
 
       # @return [Operation::ProcessorContext]
+      # rubocop:disable Metrics/AbcSize
       def process_runbook
         log_debug("Processing runbook started, setting up context.")
         ctx = Operation::ProcessorContext.new
@@ -27,14 +28,21 @@ module Pal
         log_debug("Calling off to parse impl for CSV processing.")
 
         # Different impls may choose to stream file, so we hand in a location and let it decide.
-        _parse_file(ctx, _csv_processor(config.source_file_loc)) do |row|
-          ctx.add_candidate(row) if should_include?(@runbook.filters, row, ctx.column_headers)
+        #
+
+        config.all_source_files.each_with_index do |file, idx|
+          log_info "Opening file [#{file}][#{idx}]"
+
+          _parse_file(ctx, _csv_processor(file)) do |row|
+            ctx.add_candidate(row) if should_include?(@runbook.filters, row, ctx.column_headers)
+          end
         end
 
         log_info "Process completed with #{ctx.candidates.size} candidate records found."
 
         ctx
       end
+      # rubocop:enable Metrics/AbcSize
 
       # @return [Boolean]
       # @param [Pal::Operation::FilterEvaluator] filters

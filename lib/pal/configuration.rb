@@ -43,6 +43,10 @@ module Pal
         JSON.parse(File.read(@template_file_loc))
       end
 
+      def all_source_files
+        @source_file_loc.split(",")
+      end
+
       private
 
       def decorate_errors
