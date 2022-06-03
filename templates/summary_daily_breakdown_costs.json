@@ -30,7 +30,7 @@
       "group_by" : ["lineItem/UsageStartDate"],
       "sort_by" : "lineItem/UsageStartDate",
       "projection" : {
-        "type" : "sum",
+        "type" : "average",
         "property" : "lineItem/BlendedCost"
       }
     }

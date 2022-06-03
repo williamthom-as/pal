@@ -78,11 +78,11 @@ module Pal
 
         sort_idx = column_headers[@sort_by]
 
-        raise "Missing [#{@sort_by}] in group_by properties." if sort_idx.nil? || sort_idx.negative?
-
-        rows.sort_by! do |a|
-          a[sort_idx]
+        if sort_idx.nil? || sort_idx.negative?
+          raise "Missing [#{@sort_by}]. Valid candidates are: [#{column_headers.keys.join(", ")}]"
         end
+
+        rows.sort_by! { |a| a[sort_idx] }
 
         [rows.reverse, column_headers]
       end
@@ -92,6 +92,9 @@ module Pal
         keys = []
         @group_by.each do |gbp|
           idx = column_headers[gbp]
+
+          raise "Missing column index. Please include [#{gbp}] in columns #{column_headers.keys}." unless idx
+
           keys << row[idx]
         end
 
@@ -166,7 +169,7 @@ module Pal
             arr << row[0][idx]
           end
 
-          arr << sum
+          arr << sum.round(8)
           rows << arr
         end
 
@@ -194,6 +197,8 @@ module Pal
       def _process_impl(_group_by_rules, groups, column_headers)
         rows = []
         distinct_column_idx = column_headers[@property]
+
+        raise "Missing column index. Please include [#{@property}] in column extraction." unless distinct_column_idx
 
         groups.each_key do |key|
           row = groups[key]
@@ -293,5 +298,88 @@ module Pal
       end
 
     end
+
+    class AverageProjectionImpl < ProjectionImpl
+
+      def initialize(property)
+        super("average", property)
+      end
+
+      private
+
+      # @param [Array<String>] group_by_rules
+      # @param [Hash] groups
+      # @param [Hash] column_headers
+      # @return [Array] rows, column_headers
+      # rubocop:disable Metrics/AbcSize
+      def _process_impl(group_by_rules, groups, column_headers)
+        rows = []
+        sum_column_idx = column_headers[@property]
+
+        groups.each_key do |key|
+          sum = 0.0
+
+          records = groups[key]
+          records.each do |entry|
+            sum += entry[sum_column_idx].to_f
+          end
+
+          arr = []
+          group_by_rules.each do |gb|
+            idx = column_headers[gb]
+            arr << records[0][idx]
+          end
+
+          arr << sum.round(8) / records.size
+          rows << arr
+        end
+
+        column_headers = {}
+        group_by_rules.each_with_index { |gb, idx| column_headers[gb] = idx }
+        column_headers["average_#{@property}"] = group_by_rules.size
+
+        [rows, column_headers]
+      end
+      # rubocop:enable Metrics/AbcSize
+    end
+
+    class CountProjectionImpl < ProjectionImpl
+
+      def initialize(property)
+        super("count", property)
+      end
+
+      private
+
+      # @param [Array<String>] _group_by_rules
+      # @param [Hash] groups
+      # @param [Hash] column_headers
+      # @return [Array] rows, column_headers
+      # rubocop:disable Metrics/AbcSize
+      def _process_impl(_group_by_rules, groups, column_headers)
+        distinct_column_idx = column_headers[@property]
+        raise "Missing column index. Please include [#{@property}] in column extraction." unless distinct_column_idx
+
+        count_map = {}
+
+        groups.each_key do |key|
+          groups[key].each do |entry|
+            prop = entry[distinct_column_idx]
+
+            count_map[prop] = 0 unless count_map[prop]
+            count_map[prop] += 1
+          end
+        end
+
+        column_headers = {}
+        column_headers[@property] = 0
+        column_headers["count_#{@property}"] = 0
+
+        [count_map.map { |k, v| [k, v] }, column_headers]
+      end
+      # rubocop:enable Metrics/AbcSize
+    end
+
   end
 end
+

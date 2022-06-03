@@ -29,7 +29,7 @@
       "lineItem/BlendedCost"
     ],
     "actions" : {
-      "group_by" : ["lineItem/ProductCode", "lineItem/UsageType"],
+      "group_by" : ["lineItem/ProductCode"],
       "sort_by" : "sum_lineItem/BlendedCost",
       "projection" : {
         "type" : "sum",

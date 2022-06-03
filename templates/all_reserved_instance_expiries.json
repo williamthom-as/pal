@@ -1,0 +1,41 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "RI Expiry Dates",
+    "handler" : "AwsCur",
+    "description" : "Reserved instance expiry dates"
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [{
+      "field": "reservation/EndTime",
+      "type": "string",
+      "operator": "is_not_empty",
+      "value": ""
+    }]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : {
+        "title" : "Reserved instance expiry dates"
+      }
+    }],
+    "properties" : [
+      "lineItem/UsageType",
+      "lineItem/ProductCode",
+      "product/productFamily",
+      "lineItem/ResourceId",
+      "lineItem/BlendedCost",
+      "reservation/EndTime"
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/ResourceId","reservation/EndTime"],
+      "sort_by" : "count_reservation/EndTime",
+      "projection" : {
+        "type" : "count",
+        "property" : "reservation/EndTime"
+      }
+    }
+  }
+}
