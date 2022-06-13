@@ -1,18 +1,19 @@
 Pal
 ===
 
-Pal is a tool for automating simple cloud spend analysis. It provides just enough features to be useful.
-- **Analysis as Code**: Describe simple routines to extract, filter and manipulate data from cloud provider spreadsheets.
-  - Quickly filter, manipulate and transform your spreadsheet into consumable, understandable insight.
+Pal is a tool for automating simple spreadsheet analysis. It provides just enough features to be useful.
+It has been primarily designed to assist with cloud billing reports, but can work generically across any CSV spreadsheet.
+- **Reporting as Code**: Describe simple routines to **extract**, **filter** and **manipulate** data from spreadsheets.
+  - Quickly filter, manipulate and transform your spreadsheet into consumable, understandable insight using one or more provided export functions (including CSV, chart, table, interactive report). 
   - Export filtered data into common data formats for further analysis or visualisation in a different tool.
+  - Run, version and share report template definitions with others.
 - **Plugins**: Extend Pal hooks with your own functionality. Read more about it [here](plugins/PLUGINS.md).
-- **Forecasting** [*To Do*]: Pipe data from your results into common forecasting algorithms.
 
 ## Use Cases
 
 Common use cases are:
-- Understanding cloud spend can be a complex task, use Pal to help start the conversation or drill deep into specifics.
 - Analyse data using a "write once, run any time" templating approach [see examples below].
+- Analysing cloud spend can be a complex task, use Pal to help start the conversation or drill deep into specifics.
 - Automate the break down of large and unwieldy provider spreadsheets into more digestable and "Excel friendly" files.
 
 ## Usage
@@ -91,8 +92,8 @@ Install it yourself as:
 ### Getting started *quickly*
 To quickly spin up a development environment, please use the Dockerfile provided. Run:
 
-    $ sudo docker build -t pal .
-    $ sudo docker run -it --rm pal bash
+    $ docker build -t pal .
+    $ docker run -it --rm pal bash
 
 Please do not forget to mount any volumes which may have templates that you wish to use. Default templates are available too, found under `/app/templates`.
 
