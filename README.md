@@ -1,8 +1,8 @@
 Pal
 ===
 
-Pal is a tool for automating simple spreadsheet analysis. It provides just enough features to be useful.
-It has been primarily designed to assist with cloud billing reports, but can work generically across any CSV spreadsheet.
+Pal is a tool for automating simple tabular data analysis. It provides just enough features to be useful.
+It has been primarily designed to assist with cloud billing reports, but can work generically across any tabular CSV file.
 - **Reporting as Code**: Describe simple routines to **extract**, **filter** and **manipulate** data from spreadsheets.
   - Quickly filter, manipulate and transform your spreadsheet into consumable, understandable insight using one or more provided export functions (including CSV, chart, table, interactive report). 
   - Export filtered data into common data formats for further analysis or visualisation in a different tool.
@@ -18,7 +18,7 @@ Common use cases are:
 
 ## Usage
 
-Two things are needed to run Pal, the cloud provider spreadsheet and the template file. Optionally, you can provide an output directory, otherwise it will use ``/tmp/pal``.
+Two things are needed to run Pal, the *spreadsheet* and a *template* file. Optionally, you can provide an output directory, otherwise it will use ``/tmp/pal``.
 
 Provide these to Pal as arguments as follows: 
 
@@ -109,7 +109,7 @@ To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/william-inf/pal. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/pal/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/williamthom-as/pal. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/pal/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
