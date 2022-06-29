@@ -23,14 +23,15 @@
     }],
     "properties" : [
       "lineItem/UsageStartDate",
+      "lineItem/ResourceId",
       "lineItem/ProductCode",
       "lineItem/BlendedCost"
     ],
     "actions" : {
-      "group_by" : ["lineItem/UsageStartDate"],
-      "sort_by" : "lineItem/UsageStartDate",
+      "group_by" : ["lineItem/ResourceId", "lineItem/ProductCode"],
+      "sort_by" : "sum_lineItem/BlendedCost",
       "projection" : {
-        "type" : "average",
+        "type" : "sum",
         "property" : "lineItem/BlendedCost"
       }
     }
