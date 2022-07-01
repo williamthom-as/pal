@@ -1,6 +1,6 @@
 {
   "lineItem/UsageStartDate" : {
-    "data_type": "date"
+    "data_type": "datetime"
   },
   "lineItem/BlendedCost" : {
     "data_type": "decimal"

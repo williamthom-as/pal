@@ -65,7 +65,7 @@ It shows grouping all records from an AWS Cost and Usage Report by product and u
   }
 }
 ```
-*Find full template [here](templates/global_resource_and_usage_type_costs.json)*.
+*Find full template [here](templates/aws/global_resource_and_usage_type_costs.json)*.
 
 #### Exported
 ```bash

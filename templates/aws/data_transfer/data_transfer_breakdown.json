@@ -1,0 +1,63 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "Data Transfer Breakdown",
+    "handler" : "AwsCur",
+    "description" : "Spend breakdown for data transfer"
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [
+      {
+        "field": "product/ProductFamily",
+        "type": "number",
+        "operator": "greater",
+        "value": 0
+      },{
+        "field": "lineItem/ProductCode",
+        "type": "string",
+        "operator": "equal",
+        "value": "AmazonEC2"
+      },{
+        "field": "lineItem/LineItemType",
+        "type": "string",
+        "operator": "not_equal",
+        "value": "Tax"
+      },{
+        "field": "lineItem/LineItemType",
+        "type": "string",
+        "operator": "not_equal",
+        "value": "Refund"
+      },{
+        "field": "lineItem/LineItemType",
+        "type": "string",
+        "operator": "not_equal",
+        "value": "Credit"
+      }
+    ]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : {
+        "title" : "AWS CUR Resource/Usage Type Combined Costs"
+      }
+    }],
+    "properties" : [
+      "lineItem/UsageStartDate",
+      "lineItem/ProductCode",
+      "lineItem/LineItemDescription",
+      "lineItem/UnblendedCost"
+    ],
+    "actions" : {
+      "group_by" : ["lineItem/ProductCode", "lineItem/LineItemDescription"],
+      "sort_by" : "sum_lineItem/UnblendedCost",
+      "projection" : {
+        "type" : "sum",
+        "property" : "lineItem/UnblendedCost"
+      }
+    }
+  }
+}
+
+
