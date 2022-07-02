@@ -3,36 +3,39 @@
     "version" : "2022-04-02",
     "name" : "Data Transfer Breakdown",
     "handler" : "AwsCur",
-    "description" : "Spend breakdown for data transfer"
+    "description" : "Spend breakdown for data transfer (From/To)"
   },
-  "filters":  {
+  "filters": {
     "condition": "AND",
     "rules": [
       {
-        "field": "product/ProductFamily",
-        "type": "number",
-        "operator": "greater",
-        "value": 0
-      },{
-        "field": "lineItem/ProductCode",
+        "field": "product/productFamily",
         "type": "string",
         "operator": "equal",
-        "value": "AmazonEC2"
-      },{
-        "field": "lineItem/LineItemType",
-        "type": "string",
-        "operator": "not_equal",
-        "value": "Tax"
-      },{
-        "field": "lineItem/LineItemType",
-        "type": "string",
-        "operator": "not_equal",
-        "value": "Refund"
-      },{
-        "field": "lineItem/LineItemType",
-        "type": "string",
-        "operator": "not_equal",
-        "value": "Credit"
+        "value": "Data Transfer"
+      },
+      {
+        "condition": "OR",
+        "rules": [
+          {
+            "field": "lineItem/LineItemType",
+            "type": "string",
+            "operator": "equal",
+            "value": "Usage"
+          },
+          {
+            "field": "lineItem/LineItemType",
+            "type": "string",
+            "operator": "equal",
+            "value": "DiscountedUsage"
+          },
+          {
+            "field": "lineItem/LineItemType",
+            "type": "string",
+            "operator": "equal",
+            "value": "SavingsPlanCoveredUsage"
+          }
+        ]
       }
     ]
   },
@@ -40,21 +43,48 @@
     "types" : [{
       "name" : "table",
       "settings" : {
-        "title" : "AWS CUR Resource/Usage Type Combined Costs"
+        "title" : "Data Transfer by Product and Type"
       }
     }],
     "properties" : [
       "lineItem/UsageStartDate",
+      "lineItem/UsageAccountId",
       "lineItem/ProductCode",
-      "lineItem/LineItemDescription",
+      "lineItem/ResourceId",
+      "lineItem/UsageType",
+      "product/fromLocation",
+      "product/toLocation",
+      "product/productFamily",
       "lineItem/UnblendedCost"
     ],
     "actions" : {
-      "group_by" : ["lineItem/ProductCode", "lineItem/LineItemDescription"],
-      "sort_by" : "sum_lineItem/UnblendedCost",
+      "group_by" : [
+        "lineItem/ProductCode",
+        "lineItem/UsageAccountId",
+        "lineItem/UsageType",
+        "product/fromLocation",
+        "product/toLocation",
+        "product/productFamily"
+      ],
+      "sort_by" : "lineItem/ProductCode",
       "projection" : {
         "type" : "sum",
         "property" : "lineItem/UnblendedCost"
+      }
+    }
+  },
+  "column_overrides" : {
+    "lineItem/UsageStartDate" : {
+      "data_type": "date"
+    }
+  },
+  "__comments__" : {
+    "optional": {
+      "actions" : {
+        "group_by" : [
+          "lineItem/UsageStartDate",
+          "lineItem/ResourceId"
+        ]
       }
     }
   }

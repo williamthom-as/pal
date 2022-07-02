@@ -18,7 +18,7 @@ module Pal
       def process_runbook
         log_debug("Processing runbook started, setting up context.")
         ctx = Operation::ProcessorContext.new
-        ctx.column_type_definitions = open_definition_file || {}
+        ctx.column_type_definitions = retrieve_column_definitions
 
         # Get CSV parser
         # Each impl needs to return a hash of candidate columns and values
@@ -28,7 +28,6 @@ module Pal
         log_debug("Calling off to parse impl for CSV processing.")
 
         # Different impls may choose to stream file, so we hand in a location and let it decide.
-        #
 
         config.all_source_files.each_with_index do |file, idx|
           log_info "Opening file [#{file}][#{idx}]"
@@ -54,11 +53,14 @@ module Pal
       end
 
       # @return [Hash, nil]
-      def open_definition_file
+      def retrieve_column_definitions
+        overrides = @runbook.column_overrides || {}
         path = File.join(File.dirname(__FILE__), "definitions/#{_type}.json")
-        return nil unless File.exist?(path)
 
-        JSON.parse(File.read(path))
+        return overrides unless File.exist?(path)
+
+        default_defs = JSON.parse(File.read(path))
+        default_defs.merge(overrides)
       rescue StandardError => e
         log_error("Cannot parse definition file for [#{_type}].", e)
         nil

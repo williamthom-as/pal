@@ -24,6 +24,9 @@ module Pal
       # @return [Pal::Operation::Actions]
       attr_reader :actions
 
+      # @return [Hash]
+      attr_accessor :column_overrides
+
       # @param [Array<Hash>] opts
       def filters=(opts)
         @filters = Pal::Operation::FilterEvaluator.new(opts)
