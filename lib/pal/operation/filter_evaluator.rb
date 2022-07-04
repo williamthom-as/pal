@@ -175,7 +175,7 @@ module Pal
         when :number
           prop.to_f
         when :tag
-          prop
+          JSON.parse(prop)
         when :date
           Date.parse(prop)
         else
@@ -220,14 +220,15 @@ module Pal
       # @return [Hash{Symbol->Proc}]
       def tag_operators
         {
-          equal: proc do |x, y|
-            tokens = y.split(".")
-            key_match = tokens.first == "" ? "*" : tokens.first
-            val_match = tokens.size == 2 ? tokens.last : "*"
-            x.any? do |kvp|
-              (key_match == "*" ? true : key_match == kvp[:key]) &&
-                (val_match == "*" ? true : val_match == kvp[:value])
-            end
+          key_equal: proc do |x, y|
+            string_operators[:equal].call(x, y)
+            # tokens = y.split(".")
+            # key_match = tokens.first == "" ? "*" : tokens.first
+            # val_match = tokens.size == 2 ? tokens.last : "*"
+            # x.any? do |kvp|
+            #   (key_match == "*" ? true : key_match == kvp[:key]) &&
+            #     (val_match == "*" ? true : val_match == kvp[:value])
+            # end
           end
         }
       end

@@ -150,9 +150,12 @@ module Pal
       # @param [Hash] column_headers
       # @return [Array] rows, column_headers
       # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
       def _process_impl(group_by_rules, groups, column_headers)
         rows = []
         sum_column_idx = column_headers[@property]
+
+        raise "Missing column. Please include [#{@property}] in columns #{column_headers.keys}." unless sum_column_idx
 
         groups.each_key do |key|
           sum = 0.0

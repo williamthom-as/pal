@@ -1,0 +1,47 @@
+{
+  "metadata" : {
+    "version" : "2022-04-02",
+    "name" : "Spend breakdown by Resource Type",
+    "handler" : "GenericCSV",
+    "description" : "Spend breakdown by Resource Type"
+  },
+  "filters":  {
+    "condition": "AND",
+    "rules": [
+      {
+        "field": "PreTaxCost",
+        "type": "number",
+        "operator": "greater",
+        "value": 0
+      }]
+  },
+  "exporter" : {
+    "types" : [{
+      "name" : "table",
+      "settings" : {
+        "title" : "Spend breakdown by Resource Type"
+      }
+    }],
+    "properties" : [
+      "ResourceType",
+      "PreTaxCost"
+    ],
+    "actions" : {
+      "group_by" : ["ResourceType"],
+      "sort_by" : "sum_PreTaxCost",
+      "projection" : {
+        "type" : "sum",
+        "property" : "PreTaxCost"
+      }
+    }
+  },
+  "transforms" : [
+    {
+      "column": "Tags",
+      "strategy" : "json",
+      "options" : {}
+    }
+  ]
+}
+
+

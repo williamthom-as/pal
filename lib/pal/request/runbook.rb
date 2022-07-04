@@ -3,6 +3,7 @@
 require "pal/operation/filter_evaluator"
 require "pal/operation/exporter"
 require "pal/operation/actions"
+require "pal/operation/transforms"
 require "pal/request/metadata"
 require "pal/common/object_helpers"
 require "json"
@@ -23,6 +24,9 @@ module Pal
 
       # @return [Pal::Operation::Actions]
       attr_reader :actions
+
+      # @return [Pal::Operation::Transforms]
+      attr_reader :transforms
 
       # @return [Hash]
       attr_accessor :column_overrides
@@ -46,6 +50,12 @@ module Pal
       def actions=(opts)
         @actions = Pal::Operation::Actions.new.from_hash(opts)
       end
+
+      # @param [Hash] opts
+      def transforms=(opts)
+        @transforms = Pal::Operation::Transforms.new(opts)
+      end
+
     end
   end
 end
