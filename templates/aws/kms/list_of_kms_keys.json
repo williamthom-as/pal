@@ -42,14 +42,15 @@
       "product/productFamily",
       "lineItem/LineItemDescription",
       "lineItem/ResourceId",
-      "lineItem/BlendedCost"
+      "lineItem/BlendedCost",
+      "lineItem/UsageStartDate"
     ],
     "actions" : {
       "group_by" : ["product/productFamily", "lineItem/ResourceId"],
-      "sort_by" : "lineItem/ResourceId",
+      "sort_by" : "distinct_lineItem/ResourceId",
       "projection" : {
-        "type" : "sum",
-        "property" : "lineItem/BlendedCost"
+        "type" : "distinct",
+        "property" : "lineItem/ResourceId"
       }
     }
   }

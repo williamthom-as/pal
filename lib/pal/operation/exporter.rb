@@ -77,7 +77,7 @@ module Pal
       # Return a proc that returns boolean if val exists or not
       def lookup_proc(lookup)
         lookup_hash = lookup.is_a?(Hash) ? lookup : lookup.to_h
-        proc { |search_prop| SafeParse.extract_from_hash(lookup_hash, search_prop, true, "<Missing>") }
+        proc { |search_prop| SafeHashParse.extract_from_hash(lookup_hash, search_prop, true, "<Missing>") }
       end
 
       def actions=(opts)

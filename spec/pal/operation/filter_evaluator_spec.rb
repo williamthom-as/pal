@@ -316,6 +316,71 @@ RSpec.describe Pal::Operation::FilterEvaluator do
       expect(result).to eq(false)
     end
   end
+
+  # tag
+  valid_tag_filter = '{
+    "condition": "OR",
+    "rules": [
+      {
+        "field": "name",
+        "type": "json",
+        "operator": "key_equal",
+        "value": "dog_breed"
+      }
+    ]
+  }'
+
+  describe "#less" do
+    it "should return true result if json has key" do
+      filter = JSON.parse(valid_tag_filter)
+      filter_eval = Pal::Operation::FilterEvaluator.new(filter)
+
+      result = filter_eval.test_property(['{"dog_breed": "poodle"}'], {"name" => 0})
+      expect(result).to eq(true)
+    end
+
+    it "should return true result if json has value" do
+      valid_tag_filter = '{
+        "condition": "OR",
+        "rules": [
+          {
+            "field": "name",
+            "type": "json",
+            "operator": "value_equal",
+            "value": "poodle"
+          }
+        ]
+      }'
+
+      filter = JSON.parse(valid_tag_filter)
+      filter_eval = Pal::Operation::FilterEvaluator.new(filter)
+
+      result = filter_eval.test_property(['{"dog_breed": "poodle"}'], {"name" => 0})
+      expect(result).to eq(true)
+    end
+
+    it "should return true result if json has jpath" do
+      valid_tag_filter = '{
+        "condition": "OR",
+        "rules": [
+          {
+            "field": "name",
+            "type": "json",
+            "operator": "jpath",
+            "value": "dog_breed=poodle"
+          }
+        ]
+      }'
+
+      filter = JSON.parse(valid_tag_filter)
+      filter_eval = Pal::Operation::FilterEvaluator.new(filter)
+
+      result = filter_eval.test_property(['{"dog_breed": "poodle"}'], {"name" => 0})
+      expect(result).to eq(true)
+    end
+
+  end
+
 end
 
 

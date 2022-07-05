@@ -2,6 +2,7 @@
 
 require "json"
 require "pal/common/object_helpers"
+require "pal/common/safe_hash_parser"
 
 module Pal
   module Operation
@@ -159,8 +160,8 @@ module Pal
           number_operators
         when :date
           date_operators
-        when :tag
-          tag_operators
+        when :json
+          json_operators
         else
           raise "Missing filter operator for [#{type}], valid candidates: [string, number, tag, date]"
         end
@@ -174,12 +175,12 @@ module Pal
           prop.to_s
         when :number
           prop.to_f
-        when :tag
-          JSON.parse(prop)
+        when :json
+          prop
         when :date
           Date.parse(prop)
         else
-          raise "Missing property operator for [#{type}], valid candidates: [string, number, tag, date]"
+          raise "Missing property operator for [#{type}], valid candidates: [string, number, json, date]"
         end
       end
 
@@ -218,17 +219,23 @@ module Pal
       alias date_operators number_operators
 
       # @return [Hash{Symbol->Proc}]
-      def tag_operators
+      def json_operators
         {
           key_equal: proc do |x, y|
-            string_operators[:equal].call(x, y)
-            # tokens = y.split(".")
-            # key_match = tokens.first == "" ? "*" : tokens.first
-            # val_match = tokens.size == 2 ? tokens.last : "*"
-            # x.any? do |kvp|
-            #   (key_match == "*" ? true : key_match == kvp[:key]) &&
-            #     (val_match == "*" ? true : val_match == kvp[:value])
-            # end
+            !SafeHashParse.extract_from_json(x, y).empty?
+          end,
+          key_not_equal: proc do |x, y|
+            SafeHashParse.extract_from_json(x, y).empty?
+          end,
+          value_equal: proc do |x, y|
+            SafeHashParse.all_values_from_json(x).include?(y)
+          end,
+          value_not_equal: proc do |x, y|
+            !SafeHashParse.all_values_from_json(x).include?(y)
+          end,
+          jpath: proc do |x, y|
+            path, value = y.split("=")
+            SafeHashParse.extract_from_json(x, path).include?(value)
           end
         }
       end

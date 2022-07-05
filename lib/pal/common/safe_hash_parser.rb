@@ -2,25 +2,29 @@
 
 require "pal"
 require "json"
+require "jsonpath"
 
 module Pal
   # The most lazy way to find things in hashes and JSON.
   # Provides default and optional params
   # Provides safe navigation with hash key dot notation ('this.is.a.key')
-  class SafeParse
+  class SafeHashParse
     class << self
       # @param [String] json_str
       # @param [Object] key
       # @param [Boolean] optional
       # @param [Object] default
-      # @return [Object, nil]
+      # @return [Array]
       def extract_from_json(json_str, key, optional=false, default=nil)
-        json = lazy_parse_json(json_str)
-        extract_from_hash(json, key, optional, default)
+        val = JsonPath.new(key).on(json_str)
+        return val if val
+        return [] unless optional
+
+        [default]
       rescue JSON::ParserError, ArgumentError => e
         raise e unless optional
 
-        default
+        [default]
       end
 
       # @param [Hash] hash
@@ -37,7 +41,7 @@ module Pal
         searched = nil
 
         keys.each_with_index do |key, index|
-          break unless last_level.is_a?(Hash) && (last_level.key?(key.to_s) || last_level.key?(key.to_sym))
+          break unless last_level.is_a?(Hash) && (last_level.key?(key.to_s) || (last_level.key?(key.to_s)))
 
           if index + 1 == keys.length
             searched = last_level[key.to_s] || last_level[key.to_sym]
@@ -60,12 +64,10 @@ module Pal
       # @return [Hash]
       def lazy_parse_json(json_str, suppress_error=false)
         hash = JSON.parse(json_str)
-        hash.each_key do |key|
+        hash.clone.each_key do |key|
           sym = key.downcase.to_sym
           hash[sym] = hash[key] if key.is_a?(String) && !hash.key?(sym)
         end
-
-        hash
       rescue JSON::ParserError => e
         !suppress_error ? (raise e) : nil
       end
@@ -78,10 +80,20 @@ module Pal
         if key.is_a?(String)
           return [key.downcase.to_sym] unless key.include?(".")
 
-          return key.to_s.split(".").map {|s| s.downcase.to_sym }
+          return key.to_s.split(".").map { |s| s.downcase.to_sym }
         end
 
         raise ArgumentError, "Key [#{key}] must be either a String or Symbol"
+      end
+
+      # @param [String] json
+      def all_values_from_json(json)
+        all_values(JSON.parse(json))
+      end
+
+      # @param [Hash] hash
+      def all_values(hash)
+        hash.flat_map { |_k, v| (v.is_a?(Hash) ? all_values(v) : [v]) }
       end
     end
 
