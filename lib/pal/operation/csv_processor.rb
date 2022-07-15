@@ -49,8 +49,8 @@ module Pal
         Common::LocalFileUtils.read_file(file_location)
       end
 
-      def stream_file(file_location)
-        # TODO: Streaming file support?
+      def stream_file(_file_location)
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
     end
 

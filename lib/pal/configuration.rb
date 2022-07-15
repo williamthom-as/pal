@@ -39,6 +39,7 @@ module Pal
         true
       end
 
+      # Can probably remove this
       def read_template_file
         JSON.parse(File.read(@template_file_loc))
       end

@@ -25,8 +25,6 @@ module Pal
         log.progname = name
       end
     end
-
-
   end
 
   # Exception classes
@@ -37,9 +35,9 @@ module Pal
       super(msg)
       @errors = errors
     end
-  end
 
-  class PluginManager
-
+    def message
+      "Validation error: [#{@errors.join(", ")}]"
+    end
   end
 end

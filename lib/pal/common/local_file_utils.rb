@@ -19,13 +19,17 @@ module Pal
       def self.clean_dir(path)
         dir = File.dirname(path)
 
-        FileUtils.rm_f(dir) if File.directory?(dir)
+        FileUtils.rm_rf(dir) if File.directory?(dir)
+      end
+
+      def self.remove_file(path_to_file)
+        File.delete(path_to_file) if File.exist?(path_to_file)
       end
 
       def self.read_file(file_location)
         result = file_location.start_with?("/") ? file_location : File.join(File.dirname(__FILE__), file_location)
 
-        raise "No file found at [#{file_location}]" unless File.exist? result
+        raise "No file found at [#{result}]" unless File.exist? result
 
         File.read(result)
       end

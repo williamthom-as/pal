@@ -3,7 +3,7 @@
 require "pal"
 require "pal/configuration"
 require "pal/plugin/plugin_manager"
-require "pal/handler/base_handler_impl"
+require "pal/handler/base_handler"
 
 module Pal
 
@@ -31,12 +31,7 @@ module Pal
       @manager = create_service_manager
     end
 
-    def reset
-      # Will be needed when combining operations ... later
-      @runbook, @manager = nil
-      setup
-    end
-
+    # @return [Array, Hash]
     def process
       @manager.process_runbook(@runbook)
     end
@@ -54,9 +49,6 @@ module Pal
     rescue JSON::ParserError => e
       log_error("Malformed JSON request for file [#{file_location}]")
       raise e, "Malformed JSON request for file [#{file_location}]"
-    rescue StandardError => e
-      log_error("Error creating request manager")
-      raise e
     end
 
     # @return [Pal::Handler::Manager]
@@ -66,9 +58,6 @@ module Pal
       Pal::Handler::Manager.new(impl)
     rescue NameError => e
       log_error("Cannot find a valid handler impl for #{@runbook.metadata.handler}")
-      raise e
-    rescue StandardError => e
-      log_error("Error creating service manager")
       raise e
     end
 

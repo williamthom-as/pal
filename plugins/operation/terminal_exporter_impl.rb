@@ -5,7 +5,7 @@ require "pal/operation/exporter"
 
 module Pal
   module Operation
-    class TerminalExporterImpl < BaseExportHandlerImpl
+    class TerminalExporterImpl < BaseExportHandler
       def _export(rows, _column_headers)
         puts "Inside plugin! You passed me [#{rows.size}] rows"
       end

@@ -4,7 +4,7 @@ require "pal"
 
 module Pal
   module Handler
-    class BaseHandlerImpl
+    class BaseHandler
       include Configuration
       include Log
 
@@ -95,7 +95,7 @@ module Pal
     end
 
     # Generic has first row column headers, then data rows.
-    class GenericCSVHandlerImpl < BaseHandlerImpl
+    class GenericCSVHandlerImpl < BaseHandler
       include Log
 
       # @param [ProcessorContext] ctx

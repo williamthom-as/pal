@@ -8,11 +8,13 @@ require "pal/common/object_helpers"
 
 module Pal
   module Operation
+
+    # Probably a bad name, its really a processor that calls an export impl - w
     class Exporter
       include Log
       include ObjectHelpers
 
-      # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
+      # @return [Array<Pal::Operation::BaseExportHandler>]
       attr_reader :export_types
 
       # @return [Array<String>]
@@ -22,6 +24,7 @@ module Pal
       attr_reader :actions
 
       # @param [Pal::Operation::ProcessorContext] ctx
+      # @return [Array, Hash]
       def perform_export(ctx)
         log_info("About to extract required data defined in #{ctx.candidates.size} rows")
         extracted_rows, extracted_columns = extract(ctx, @properties)
@@ -36,6 +39,8 @@ module Pal
           t.run_export(extracted_rows, extracted_columns)
           log_info("... export for [#{t.class}] completed")
         end
+
+        [extracted_rows, extracted_columns]
       end
 
       private
@@ -72,19 +77,11 @@ module Pal
       end
       # rubocop:enable Metrics/AbcSize
 
-      # @param [Struct, Hash] lookup
-      # @return [Proc<Boolean>]
-      # Return a proc that returns boolean if val exists or not
-      def lookup_proc(lookup)
-        lookup_hash = lookup.is_a?(Hash) ? lookup : lookup.to_h
-        proc { |search_prop| SafeHashParse.extract_from_hash(lookup_hash, search_prop, true, "<Missing>") }
-      end
-
       def actions=(opts)
         @actions = Pal::Operation::Actions.new.from_hash(opts)
       end
 
-      # @return [Array<Pal::Operation::BaseExportHandlerImpl>]
+      # @return [Array<Pal::Operation::BaseExportHandler>]
       def types=(types_conf)
         @export_types = types_conf.map do |type_conf|
           name = type_conf["name"]
@@ -110,14 +107,14 @@ module Pal
 
     end
 
-    class BaseExportHandlerImpl
+    class BaseExportHandler
       include Pal::Configuration
       include Pal::Log
 
-      # @return [Array<Hash>] settings
+      # @return [Hash] settings
       attr_accessor :settings
 
-      # @param [Array<Hash>] settings
+      # @param [Hash] settings
       def initialize(settings)
         @settings = settings
       end
@@ -127,7 +124,7 @@ module Pal
       # Extract values, call export.
       def run_export(rows, columns)
         if rows.empty?
-          Pal.logger.warn("No results were found, will not export to file.")
+          Pal.logger.warn("No results were found, will not export.")
           return
         end
 
@@ -144,7 +141,7 @@ module Pal
       end
     end
 
-    class CsvExporterImpl < BaseExportHandlerImpl
+    class CsvExporterImpl < BaseExportHandler
       include FileExportable
 
       # @param [Array] rows
@@ -158,7 +155,7 @@ module Pal
         end
 
         write_to_file(
-          config.output_dir, @settings["file_name"] || "pal", "csv", file_contents.join("\n")
+          @settings["output_dir"], @settings["file_name"] || "pal", "csv", file_contents.join("\n")
         )
       end
 
@@ -166,7 +163,7 @@ module Pal
 
     require "terminal-table"
 
-    class TableExporterImpl < BaseExportHandlerImpl
+    class TableExporterImpl < BaseExportHandler
 
       # @param [Array] rows
       # @param [Hash] column_headers

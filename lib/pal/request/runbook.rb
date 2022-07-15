@@ -46,15 +46,10 @@ module Pal
         @exporter = Pal::Operation::Exporter.new.from_hash(opts)
       end
 
-      # @param [Hash] opts
-      def actions=(opts)
-        @actions = Pal::Operation::Actions.new.from_hash(opts)
-      end
-
-      # @param [Hash] opts
-      def transforms=(opts)
-        @transforms = Pal::Operation::Transforms.new(opts)
-      end
+      # # @param [Hash] opts
+      # def transforms=(opts)
+      #   @transforms = Pal::Operation::Transforms.new(opts)
+      # end
 
     end
   end

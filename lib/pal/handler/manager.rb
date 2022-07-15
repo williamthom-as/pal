@@ -7,14 +7,15 @@ module Pal
 
       attr_accessor :handler
 
-      # @param [BaseHandlerImpl] handler
+      # @param [BaseHandler] handler
       def initialize(handler)
-        raise TypeError.new("Service must be type of BaseServiceImpl") unless handler.is_a? BaseHandlerImpl
+        raise TypeError.new("Service must be type of BaseServiceImpl") unless handler.is_a? BaseHandler
 
         @handler = handler
       end
 
       # @param [Pal::Request::Runbook] runbook
+      # @return [Array, Hash]
       def process_runbook(runbook)
         Pal.logger.info("Beginning execution of playbook ...")
         ctx = @handler.process_runbook

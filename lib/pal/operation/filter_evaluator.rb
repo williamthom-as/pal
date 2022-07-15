@@ -174,7 +174,7 @@ module Pal
         when :string
           prop.to_s
         when :number
-          prop.to_f
+          prop.is_a?(Array) ? prop : prop.to_f
         when :json
           prop
         when :date
@@ -212,8 +212,8 @@ module Pal
           less_or_equal: proc { |x, y| x <= y },
           greater: proc { |x, y| x > y },
           greater_or_equal: proc { |x, y| x >= y },
-          between: proc { |x, y| x.is_a? Array ? x.between?(y.first, z.last) : false },
-          not_between: proc { |x, y| x.is_a? Array ? !x.between?(y.first, z.last) : false }
+          between: proc { |x, y| y.is_a?(Array) ? x.between?(y.first, y.last) : false },
+          not_between: proc { |x, y| y.is_a?(Array) ? !x.between?(y.first, y.last) : false }
         }
       end
       alias date_operators number_operators

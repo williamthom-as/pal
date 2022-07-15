@@ -48,7 +48,7 @@ module Pal
         clazz_ins = Kernel.const_get(full_clazz_name)
         ancestors = clazz_ins.ancestors
 
-        valid_candidates = [Pal::Operation::BaseExportHandlerImpl]
+        valid_candidates = [Pal::Operation::BaseExportHandler]
         unless valid_candidates.find { |a| ancestors.include?(a) }
           log_error("Invalid plugin has been given. Valid plugin candidates are: #{valid_candidates.inspect}")
           raise "Invalid plugin given!"
