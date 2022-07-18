@@ -7,9 +7,9 @@ module Pal
 
       attr_accessor :handler
 
-      # @param [BaseHandler] handler
+      # @param [Base] handler
       def initialize(handler)
-        raise TypeError.new("Service must be type of BaseServiceImpl") unless handler.is_a? BaseHandler
+        raise TypeError.new("Service must be type of BaseServiceImpl") unless handler.is_a? Base
 
         @handler = handler
       end

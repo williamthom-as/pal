@@ -1,26 +1,26 @@
 require "pal/operation/exporter"
-require "pal/handler/base_handler"
+require "pal/handler/base"
 
-RSpec.describe Pal::Handler::BaseHandler do
+RSpec.describe Pal::Handler::Base do
   include Pal::Configuration
 
   describe "#_type" do
     it "should throw on abstracts" do
-      handler = Pal::Handler::BaseHandler.new(nil)
+      handler = Pal::Handler::Base.new(nil)
       expect { handler.send(:_type) }.to raise_error(NotImplementedError)
     end
   end
 
   describe "#_csv_processor" do
     it "should throw on abstracts" do
-      handler = Pal::Handler::BaseHandler.new(nil)
+      handler = Pal::Handler::Base.new(nil)
       expect { handler.send(:_csv_processor, nil) {} }.to raise_error(NotImplementedError)
     end
   end
 
   describe "#_parse_file" do
     it "should throw on abstracts" do
-      handler = Pal::Handler::BaseHandler.new(nil)
+      handler = Pal::Handler::Base.new(nil)
       expect { handler.send(:_parse_file, nil, nil) {} }.to raise_error(NotImplementedError)
     end
   end

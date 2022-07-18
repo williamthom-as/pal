@@ -3,7 +3,7 @@
 require "pal"
 require "pal/configuration"
 require "pal/common/local_file_utils"
-require "pal/common/safe_hash_parser"
+require "pal/common/safe_hash_parse"
 require "pal/common/object_helpers"
 
 module Pal

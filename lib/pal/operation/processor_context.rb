@@ -23,24 +23,24 @@ module Pal
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity
-      def cast(column_header, row_property)
-        return row_property unless @column_type_definitions&.key?(column_header)
+      def cast(column_header, value)
+        return value unless @column_type_definitions&.key?(column_header)
 
         case @column_type_definitions[column_header]["data_type"]
         when "string"
-          row_property.to_s
+          value.to_s
         when "decimal"
-          row_property.to_f
+          value.to_f
         when "integer"
-          row_property.to_i
+          value.to_i
         when "date_time"
-          DateTime.parse(row_property)
+          DateTime.parse(value)
         when "date"
-          Date.parse(row_property)
+          Date.parse(value)
         when nil
-          row_property
+          value
         else
-          row_property
+          value
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity

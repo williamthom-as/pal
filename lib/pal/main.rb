@@ -3,7 +3,7 @@
 require "pal"
 require "pal/configuration"
 require "pal/plugin/plugin_manager"
-require "pal/handler/base_handler"
+require "pal/handler/base"
 
 module Pal
 

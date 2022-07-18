@@ -2,7 +2,7 @@
 
 require "json"
 require "pal/common/object_helpers"
-require "pal/common/safe_hash_parser"
+require "pal/common/safe_hash_parse"
 
 module Pal
   module Operation
