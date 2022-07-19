@@ -3,7 +3,6 @@
 require "pal/operation/filter_evaluator"
 require "pal/operation/exporter"
 require "pal/operation/actions"
-require "pal/operation/transforms"
 require "pal/request/metadata"
 require "pal/common/object_helpers"
 require "json"

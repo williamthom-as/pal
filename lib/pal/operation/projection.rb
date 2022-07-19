@@ -7,14 +7,20 @@ module Pal
     class Projection
       include Log
 
-      attr_accessor :type, :property
+      # @return [String]
+      attr_reader :type
 
+      # @return [String]
+      attr_reader :property
+
+      # @param [String] type
+      # @param [String] property
       def initialize(type, property)
         @type = type
         @property = property
       end
 
-      # @param [Array<String>] group_by_rules
+      # @param [Array<String>] group_by_rules # export columns
       # @param [Hash] groups
       # @param [Hash] column_headers
       # @return [Array] rows, column_headers
@@ -23,6 +29,7 @@ module Pal
         _process_impl(group_by_rules, groups, column_headers)
       end
 
+      # @return [Boolean]
       def processable?
         !(@type.nil? || @property.nil?)
       end
@@ -41,6 +48,7 @@ module Pal
 
     class SumProjectionImpl < Projection
 
+      # @param [String] property
       def initialize(property)
         super("sum", property)
       end
@@ -84,11 +92,13 @@ module Pal
 
         [rows, column_headers]
       end
+      # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/AbcSize
     end
 
     class DistinctProjectionImpl < Projection
 
+      # @param [String] property
       def initialize(property)
         super("distinct", property)
       end
@@ -141,7 +151,7 @@ module Pal
             prop_val = entry[max_column_idx].to_f
 
             max_vals[key] = entry unless max_vals.key?(key)
-            max_vals[key] = entry if comparator_proc.call(max_vals[key][0][max_column_idx].to_f, prop_val)
+            max_vals[key] = entry if _comparator_proc.call(max_vals[key][0][max_column_idx].to_f, prop_val)
           end
         end
 
@@ -155,41 +165,44 @@ module Pal
       # rubocop:enable Metrics/AbcSize
       #
 
-      def comparator_proc
+      def _comparator_proc
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
     end
 
     class MaxProjectionImpl < MaxMinProjectionImpl
 
+      # @param [String] property
       def initialize(property)
         super("max", property)
       end
 
       private
 
-      def comparator_proc
-        proc { |x, y| x > y }
+      def _comparator_proc
+        proc { |x, y| x < y }
       end
 
     end
 
     class MinProjectionImpl < MaxMinProjectionImpl
 
+      # @param [String] property
       def initialize(property)
         super("min", property)
       end
 
       private
 
-      def comparator_proc
-        proc { |x, y| x < y }
+      def _comparator_proc
+        proc { |x, y| x > y }
       end
 
     end
 
     class DefaultProjectionImpl < Projection
 
+      # @param [String] property
       def initialize(property)
         super("default", property)
       end
@@ -206,6 +219,7 @@ module Pal
 
     class AverageProjectionImpl < Projection
 
+      # @param [String] property
       def initialize(property)
         super("average", property)
       end
@@ -231,6 +245,8 @@ module Pal
 
           arr = []
           group_by_rules.each do |gb|
+            next if gb.eql? @property
+
             idx = column_headers[gb]
             arr << records[0][idx]
           end
@@ -240,8 +256,13 @@ module Pal
         end
 
         column_headers = {}
-        group_by_rules.each_with_index { |gb, idx| column_headers[gb] = idx }
-        column_headers["average_#{@property}"] = group_by_rules.size
+        group_by_rules.each_with_index do |gb, idx|
+          next if gb.eql? @property
+
+          column_headers[gb] = idx
+        end
+
+        column_headers["average_#{@property}"] = group_by_rules.size - 1 # remove default
 
         [rows, column_headers]
       end
@@ -250,6 +271,7 @@ module Pal
 
     class CountProjectionImpl < Projection
 
+      # @param [String] property
       def initialize(property)
         super("count", property)
       end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pal (0.1.1)
+    pal (0.2.1)
       rcsv
       terminal-table
 

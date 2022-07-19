@@ -78,4 +78,10 @@ RSpec.describe Pal::Handler::GenericCSVHandlerImpl do
       expect(@impl._type).to eq("generic")
     end
   end
+
+  describe "#retrieve_column_definitions" do
+    it "should init and store runbook policy" do
+      expect(@impl.retrieve_column_definitions).to eq({})
+    end
+  end
 end

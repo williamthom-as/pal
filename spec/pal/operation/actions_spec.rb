@@ -10,7 +10,8 @@ RSpec.describe Pal::Operation::Actions do
       "projection" : {
         "type" : "sum",
         "property" : "lineItem/BlendedCost"
-      }
+      },
+      "junk" : []
     }'
 
     @configuration = JSON.parse(json)

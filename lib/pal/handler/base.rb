@@ -61,9 +61,6 @@ module Pal
 
         default_defs = JSON.parse(File.read(path))
         default_defs.merge(overrides)
-      rescue StandardError => e
-        log_error("Cannot parse definition file for [#{_type}].", e)
-        nil
       end
 
       protected
