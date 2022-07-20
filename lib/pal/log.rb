@@ -4,7 +4,6 @@ require "pal"
 
 module Pal
   module Log
-
     # @param [String] message
     def log_debug(message)
       Pal.logger.debug(message)
@@ -21,10 +20,10 @@ module Pal
     end
 
     # @param [String] message
-    # @param [Exception/Nil] ex
-    def log_error(message, ex = nil)
+    # @param [Exception/Nil] exception
+    def log_error(message, exception=nil)
       Pal.logger.error(message)
-      Pal.logger.error(ex.backtrace.join("\n")) unless ex.nil?
+      Pal.logger.error(exception.backtrace.join("\n")) unless exception.nil?
     end
   end
 end

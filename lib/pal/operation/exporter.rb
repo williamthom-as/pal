@@ -8,7 +8,6 @@ require "pal/common/object_helpers"
 
 module Pal
   module Operation
-
     # Probably a bad name, its really a processor that calls an export impl - w
     class Exporter
       include Log
@@ -94,7 +93,6 @@ module Pal
     end
 
     module FileExportable
-
       # @param [String] file_path
       # @param [String] contents
       # @param [String] file_extension
@@ -104,7 +102,6 @@ module Pal
           file.write(contents)
         end
       end
-
     end
 
     class BaseExportHandler
@@ -158,13 +155,11 @@ module Pal
           @settings["output_dir"], @settings["file_name"] || "pal", "csv", file_contents.join("\n")
         )
       end
-
     end
 
     require "terminal-table"
 
     class TableExporterImpl < BaseExportHandler
-
       # @param [Array] rows
       # @param [Hash] column_headers
       def _export(rows, column_headers)
@@ -175,8 +170,6 @@ module Pal
         puts table
       end
     end
-
     # do json exporter
   end
 end
-

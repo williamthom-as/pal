@@ -6,7 +6,6 @@ require "fileutils"
 module Pal
   module Common
     class LocalFileUtils
-
       def self.with_file(path, extension, &block)
         dir = File.dirname(path)
 

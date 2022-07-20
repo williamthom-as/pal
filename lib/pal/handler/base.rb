@@ -88,7 +88,6 @@ module Pal
       end
 
       def _extract_headers; end
-
     end
 
     # Generic has first row column headers, then data rows.
@@ -128,7 +127,6 @@ module Pal
     end
 
     class AwsCurHandlerImpl < GenericCSVHandlerImpl
-
       # @return [String]
       def _type
         "aws_cur"

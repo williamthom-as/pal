@@ -55,6 +55,9 @@ module Pal
 
         default
       end
+      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/PerceivedComplexity
 
       # @param [Object] key
       # @return [Array]
@@ -80,6 +83,5 @@ module Pal
         hash.flat_map { |_k, v| (v.is_a?(Hash) ? all_values(v) : [v]) }
       end
     end
-
   end
 end

@@ -58,7 +58,6 @@ module Pal
 
     # rCSV impl
     class RCSVProcessorImpl < CSVProcessor
-
       private
 
       # @param [ProcessorContext] ctx
@@ -76,6 +75,5 @@ module Pal
         end
       end
     end
-
   end
 end

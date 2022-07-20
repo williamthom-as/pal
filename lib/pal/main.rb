@@ -6,7 +6,6 @@ require "pal/plugin/plugin_manager"
 require "pal/handler/base"
 
 module Pal
-
   class Main
     include Log
     include Plugin
@@ -60,6 +59,5 @@ module Pal
       log_error("Cannot find a valid handler impl for #{@runbook.metadata.handler}")
       raise e
     end
-
   end
 end

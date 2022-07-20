@@ -49,7 +49,6 @@ module Pal
       # def transforms=(opts)
       #   @transforms = Pal::Operation::Transforms.new(opts)
       # end
-
     end
   end
 end

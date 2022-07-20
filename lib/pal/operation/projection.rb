@@ -47,7 +47,6 @@ module Pal
     end
 
     class SumProjectionImpl < Projection
-
       # @param [String] property
       def initialize(property)
         super("sum", property)
@@ -97,7 +96,6 @@ module Pal
     end
 
     class DistinctProjectionImpl < Projection
-
       # @param [String] property
       def initialize(property)
         super("distinct", property)
@@ -132,7 +130,6 @@ module Pal
     end
 
     class MaxMinProjectionImpl < Projection
-
       private
 
       # @param [Array<String>] _group_by_rules
@@ -171,7 +168,6 @@ module Pal
     end
 
     class MaxProjectionImpl < MaxMinProjectionImpl
-
       # @param [String] property
       def initialize(property)
         super("max", property)
@@ -182,11 +178,9 @@ module Pal
       def _comparator_proc
         proc { |x, y| x < y }
       end
-
     end
 
     class MinProjectionImpl < MaxMinProjectionImpl
-
       # @param [String] property
       def initialize(property)
         super("min", property)
@@ -197,11 +191,9 @@ module Pal
       def _comparator_proc
         proc { |x, y| x > y }
       end
-
     end
 
     class DefaultProjectionImpl < Projection
-
       # @param [String] property
       def initialize(property)
         super("default", property)
@@ -214,11 +206,9 @@ module Pal
       def _process_impl(_group_by_rules, groups, column_headers)
         [groups.values, column_headers]
       end
-
     end
 
     class AverageProjectionImpl < Projection
-
       # @param [String] property
       def initialize(property)
         super("average", property)
@@ -231,6 +221,7 @@ module Pal
       # @param [Hash] column_headers
       # @return [Array] rows, column_headers
       # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
       def _process_impl(group_by_rules, groups, column_headers)
         rows = []
         sum_column_idx = column_headers[@property]
@@ -267,10 +258,10 @@ module Pal
         [rows, column_headers]
       end
       # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
     end
 
     class CountProjectionImpl < Projection
-
       # @param [String] property
       def initialize(property)
         super("count", property)
@@ -306,7 +297,6 @@ module Pal
       end
       # rubocop:enable Metrics/AbcSize
     end
-
   end
 end
 

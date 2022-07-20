@@ -104,4 +104,3 @@ module Pal
     end
   end
 end
-

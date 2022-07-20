@@ -8,7 +8,6 @@ module Pal
   module Operation
     # Filter evaluator runs the filter processes to identify candidates
     class FilterEvaluator
-
       # @return [Rule]
       attr_reader :rule
 
@@ -29,7 +28,6 @@ module Pal
 
     # Class to manage the rules provided
     class RuleFactory
-
       # @param [Hash] rule_hash
       # @return [Rule]
       # rubocop:disable Metrics/AbcSize
@@ -63,7 +61,6 @@ module Pal
     end
 
     class Rule
-
       def evaluate(eval_ctx)
         _evaluate(eval_ctx)
       end
@@ -74,11 +71,9 @@ module Pal
       def _evaluate(_eval_ctx)
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
-
     end
 
     class GroupRule < Rule
-
       # @return [Array<Rule>]
       attr_reader :rule_group
 
@@ -90,7 +85,6 @@ module Pal
     end
 
     class AndGroupRule < GroupRule
-
       private
 
       def _evaluate(eval_ctx)
@@ -98,11 +92,9 @@ module Pal
           rule.evaluate(eval_ctx)
         end
       end
-
     end
 
     class OrGroupRule < GroupRule
-
       private
 
       def _evaluate(eval_ctx)
@@ -110,11 +102,9 @@ module Pal
           rule.evaluate(eval_ctx)
         end
       end
-
     end
 
     class OperatorRule < Rule
-
       # @return [String]
       attr_reader :operator, :field
 
@@ -257,5 +247,3 @@ module Pal
     end
   end
 end
-
-

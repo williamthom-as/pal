@@ -45,5 +45,3 @@ main.setup
 
 log_info "... set up complete. Beginning process"
 main.process
-
-
