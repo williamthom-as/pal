@@ -8,6 +8,8 @@ module Pal
   module Operation
     # Base class for CSV impls, we can define strategy on memory usage needs based on
     # potential issues from file size.
+    # TODO: We probably want to break away from this being a "CSV"-only file type later
+    # Needs more thinking
     class CSVProcessor
       include Pal::Log
 
@@ -49,6 +51,7 @@ module Pal
         Common::LocalFileUtils.read_file(file_location)
       end
 
+      # @param [String] _file_location
       def stream_file(_file_location)
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end

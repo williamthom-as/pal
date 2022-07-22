@@ -6,7 +6,7 @@ require "pal/configuration"
 require "pal/log"
 
 require "pal/operation/filter_evaluator"
-require "pal/operation/csv_processor"
+require "pal/handler/processor"
 require "pal/operation/exporter"
 require "pal/operation/actions"
 
