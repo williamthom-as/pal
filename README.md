@@ -100,6 +100,9 @@ Please do not forget to mount any volumes which may have templates that you wish
 Once set up and connected to your container, run:
 
     $ pal -t /file/path/to/template.json -s /file/path/to/billing_file.csv -o /my/output/folder
+
+## Upcoming changes
+1. Provide the ability to format exports
   
 ## Development
 

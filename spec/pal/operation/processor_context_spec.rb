@@ -8,7 +8,7 @@ RSpec.describe Pal::Operation::ProcessorContext do
     it "should construct from hash" do
       ctx = Pal::Operation::ProcessorContext.new
       expect(ctx.column_headers).to eq({})
-      expect(ctx.row_count).to eq(0)
+      expect(ctx.total_row_count).to eq(0)
       expect(ctx.candidates).to eq([])
     end
   end

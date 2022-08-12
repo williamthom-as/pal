@@ -34,5 +34,10 @@
         "property" : "lineItem/BlendedCost"
       }
     }
+  },
+  "column_overrides" : {
+    "lineItem/UsageStartDate" : {
+      "data_type": "date"
+    }
   }
 }

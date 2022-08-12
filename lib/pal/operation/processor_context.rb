@@ -5,10 +5,11 @@ require "date"
 module Pal
   module Operation
     class ProcessorContext
-      attr_accessor :row_count, :candidates, :column_headers, :column_type_definitions
+      attr_accessor :total_row_count, :current_file_row_count, :candidates, :column_headers, :column_type_definitions
 
       def initialize
-        @row_count = 0
+        @total_row_count = 0
+        @current_file_row_count = 0
         @candidates = []
         @column_headers = {}
       end

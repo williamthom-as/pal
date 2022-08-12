@@ -79,7 +79,7 @@ RSpec.describe Pal::Operation::RCSVProcessorImpl do
       ctx = Pal::Operation::ProcessorContext.new
       pal.parse(ctx, {}) {}
 
-      expect(ctx.row_count).to eq(70)
+      expect(ctx.total_row_count).to eq(70)
     end
   end
 end

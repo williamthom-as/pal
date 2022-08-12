@@ -44,12 +44,13 @@ module Pal
       # rubocop:enable Metrics/AbcSize
 
       # @return [Boolean]
-      # @param [Pal::Operation::FilterEvaluator] filters
+      # @param [Pal::Operation::FilterEvaluator] filter_eval
       # @param [Array] row
       # @param [Hash] column_headers
-      def should_include?(filters, row, column_headers)
-        # _include?(filters, row, column_headers)
-        filters.test_property(row, column_headers)
+      def should_include?(filter_eval, row, column_headers)
+        return true unless filter_eval
+
+        filter_eval.test_property(row, column_headers)
       end
 
       # @return [Hash, nil]
@@ -103,9 +104,10 @@ module Pal
       # eg. { col_name: col_value, col_name_2: col_value_2 }
       def _parse_file(ctx, csv_processor, &_block)
         log_info("Starting to process file, using #{csv_processor.class} processor for #{_type} CUR file.")
+        ctx.current_file_row_count = 0
 
         csv_processor.parse(ctx, header: :none) do |row|
-          if ctx.row_count == 1
+          if ctx.current_file_row_count == 1
             ctx.extract_column_headers(row)
             next
           end

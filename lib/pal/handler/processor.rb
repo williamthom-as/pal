@@ -73,7 +73,9 @@ module Pal
         return nil unless block_given?
 
         Rcsv.parse(read_file(@csv_file_location), opts) do |row|
-          ctx.row_count += 1
+          ctx.total_row_count += 1
+          ctx.current_file_row_count += 1
+
           yield row
         end
       end

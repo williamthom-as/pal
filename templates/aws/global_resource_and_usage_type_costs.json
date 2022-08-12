@@ -26,10 +26,11 @@
       "lineItem/UsageStartDate",
       "lineItem/ProductCode",
       "lineItem/UsageType",
-      "lineItem/BlendedCost"
+      "lineItem/BlendedCost",
+      "lineItem/UsageAccountId"
     ],
     "actions" : {
-      "group_by" : ["lineItem/ProductCode"],
+      "group_by" : ["lineItem/ProductCode", "lineItem/UsageAccountId"],
       "sort_by" : "sum_lineItem/BlendedCost",
       "projection" : {
         "type" : "sum",

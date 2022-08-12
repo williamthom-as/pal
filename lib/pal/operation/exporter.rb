@@ -47,8 +47,13 @@ module Pal
       # @param [Array<String>] properties
       # @return [Array]
       # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity
       def extract(ctx, properties)
         all_columns = ctx.column_headers.keys
+
+        properties = all_columns if properties.nil? || properties.empty?
 
         extractable_properties = {}
         properties.each do |property|
@@ -75,6 +80,9 @@ module Pal
         [extracted_rows, new_extractable_properties]
       end
       # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def actions=(opts)
         @actions = Pal::Operation::Actions.new.from_hash(opts)
