@@ -1,5 +1,6 @@
-Pal
-===
+# Pal
+
+![run tests](https://github.com/williamthom-as/pal/actions/workflows/rspec/badge.svg)
 
 Pal is a tool for automating simple tabular data analysis. It provides just enough features to be useful.
 It has been primarily designed to assist with cloud billing reports, but can work generically across any tabular CSV file.
