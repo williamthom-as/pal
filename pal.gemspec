@@ -3,14 +3,14 @@
 require_relative "lib/pal/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "pal"
+  spec.name          = "pal_tool"
   spec.version       = Pal::VERSION
   spec.authors       = ["william"]
   spec.email         = ["me@williamthom.as"]
 
-  spec.summary       = "Parse and extract information from AWS billing files with an easy templating system."
-  spec.description   = "Parse and extract information from AWS billing files with an easy templating system."
-  spec.homepage      = "https://www.github.com/william-inf/pal"
+  spec.summary       = "Using declarative template files that can be shared/edited/versioned, Pal enables efficient, repeatable querying of tabular data. "
+  spec.description   = "Pal is a tool for automating simple tabular data analysis. It provides just enough features to be useful. It has been primarily designed to assist with cloud billing reports, but can work generically across any tabular CSV file."
+  spec.homepage      = "https://www.github.com/williamthom-as/pal"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.6"
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pal (0.2.1)
+    pal_tool (0.2.1)
       rcsv
       terminal-table
 
@@ -62,7 +62,7 @@ PLATFORMS
 
 DEPENDENCIES
   jsonpath (~> 1.1, >= 1.1.2)
-  pal!
+  pal_tool!
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)
